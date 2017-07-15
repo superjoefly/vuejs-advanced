@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Custom Directives</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+    <style>
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Custom Directives</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Intro</h3>
+
+    <p>Vue allows us to register our own custom directives:</p>
+
+    <div id="demo1">
+      <input type="text" v-global-focus />
+    </div>
+
+    <script>
+      // Register global custom directive called v-focus
+      Vue.directive('globalFocus', {
+        // When the bound element is inserted into the DOM...
+        inserted(el) {
+          // Focus the element
+          console.log('Global Focus!');
+          el.focus();
+        }
+      })
+
+      var vm = new Vue({
+        el: '#demo1'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;input type="text" v-global-focus /&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      // Register global custom directive called v-focus
+      Vue.directive('globalFocus', {
+        // When the bound element is inserted into the DOM...
+        inserted(el) {
+          // Focus the element
+          console.log('Global Focus!');
+          el.focus();
+        }
+      })
+
+      var vm = new Vue({
+        el: '#demo1'
+      })
+    </code></pre>
+
+    <p>We can also register a directive locally using the <b>directives</b> option:</p>
+
+    <div id="demo2">
+      <input type="text" v-local-focus placeholder="This textbox has focus" />
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo2',
+        directives: {
+          localFocus: {
+            inserted(el) {
+              console.log('Local Focus!');
+              el.focus();
+            }
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo2"&gt;<br />
+        &lt;input type="text" v-local-focus /&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo2',
+        directives: {
+          localFocus: {
+            inserted(el) {
+              console.log('Local Focus!');
+              el.focus();
+            }
+          }
+        }
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Hook Functions</h3>
+
+    <p>Directive definition objects can provide several hook functions (all optional):</p>
+
+    <ul>
+      <li><b>bind</b>: called only once, when the directive is first bound to the element</li>
+      <li><b>inserted</b>: called when the bound element has been inserted into its parent node</li>
+      <li><b>update</b>: called after the containing component has updated, but possibly before its children have updated</li>
+      <li><b>componentUpdated</b>: called after the containing component, and its children, have updated</li>
+      <li><b>unbind</b>: called only once when the directive is unbound from the element</li>
+    </ul>
+
+    <p>The arguments passed into these hooks (el, binding, vnode, and oldVnode) will be discussed in the next section.</p>
+
+    <hr />
+
+
+
+
+    <h3>Directive Hook Arguments</h3>
+
+    <p>Directive hooks can be passed the following arguments:</p>
+
+    <ul>
+      <li><b>el</b>: the element the directive is bound to; used to directly manipulate the DOM</li>
+      <li><b>binding</b>: an object containing the following properties:
+        <ul style="list-style-type: circle">
+          <li><b>name</b>: the name of the directive without the <b>v-</b> prefix</li>
+
+          <li><b>value</b>: the value passed to the directive; example: <span class="highlight">v-my-directive="1 + 1" ... value = 2</span></li>
+
+          <li><b>oldValue</b>: the previous value; only available in <b>update</b> and <b>componentUpdated</b>; available whether or not the value has changed</li>
+
+          <li><b>expression</b>: the expression of the binding as a string; example: <span class="highlight">v-my-directive="1 + 1" ... expression = "1 + 1"</span></li>
+
+          <li><b>arg</b>: the argument passed to the directive, if any; example: <span class="highlight">v-my-directive.foo.bar ... arg = "foo"</span></li>
+
+          <li><b>modifiers</b>: an object containing modifiers, if any; example: <span class="highlight">v-my-directive.foo.bar ... modifiers object = { foo: true, bar: true}</span></li>
+        </ul>
+      </li>
+      <li><b>vnode</b>: the virtual node produced by Vue's compiler</li>
+      <li><b>oldVnode</b>: the previous virtual node; only available in the <b>update</b> and <b>componentUpdated</b> hooks</li>
+    </ul>
+
+    <p><b>Note:</b> apart from <b>el</b>, these arguments should be treated as <b>read-only</b> and should never be modified. To share information across hooks, it is recommended to use the element's <b>dataset</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Example: Hook Arguments</h3>
+
+    <!-- Convert to HTML -->
+
+    <div id="demo3">
+      <div id="hook-arguments-example" v-demo:foo.a.b="message"></div>
+    </div>
+
+    <script>
+      Vue.directive('demo', {
+        bind: function(el, binding, vnode) {
+          var s = JSON.stringify
+          el.innerHTML =
+          'name: ' + s(binding.name) + '<br>' +
+          'value: ' + s(binding.value) + '<br>' +
+          'expression: ' + s(binding.expression) + '<br>' +
+          'argument: ' + s(binding.arg) + '<br>' +
+          'modifiers: ' + s(binding.modifiers) + '<br>' +
+          'vnode keys: ' + Object.keys(vnode).join(', ')
+        }
+      })
+
+      var vm = new Vue({
+        el: '#hook-arguments-example',
+        data: {
+          message: 'Hello!'
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo3"&gt;<br />
+        &lt;div id="hook-arguments-example" v-demo:foo.a.b="message"&gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.directive('demo', {
+        bind: function(el, binding, vnode) {
+          var s = JSON.stringify
+          el.innerHTML =
+          'name: ' + s(binding.name) + '<br>' +
+          'value: ' + s(binding.value) + '<br>' +
+          'expression: ' + s(binding.expression) + '<br>' +
+          'argument: ' + s(binding.arg) + '<br>' +
+          'modifiers: ' + s(binding.modifiers) + '<br>' +
+          'vnode keys: ' + Object.keys(vnode).join(', ')
+        }
+      })
+
+      var vm = new Vue({
+        el: '#hook-arguments-example',
+        data: {
+          message: 'Hello!'
+        }
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Function Shorthand</h3>
+
+    <p>In many cases we may want the same behavior on <b>bind</b> and <b>update</b>, but don't care about the other hooks. For example:</p>
+
+    <div id="demo4">
+      <div
+        style="height: 50px; width: 50px; border: 1px solid lightgrey"
+        v-color-swatch="myColor"
+      ></div>
+    </div>
+
+    <script>
+      Vue.directive('color-swatch', function(el, binding) {
+        el.style.backgroundColor = binding.value
+      });
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          myColor: 'yellow'
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo4"&gt;<br />
+        &lt;div<br />
+          style="height: 50px; width: 50px; border: 1px solid lightgrey"<br />
+          v-color-swatch="myColor"<br />
+        &gt;&lt;/div&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.directive('color-swatch', function(el, binding) {
+        el.style.backgroundColor = binding.value
+      });
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          myColor: 'yellow'
+        }
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Object Literals</h3>
+
+    <p>Directives can take any valid JavaScript expression. If we need multiple values, we can pass in a JavaScript object literal:</p>
+
+    <div id="demo5">
+      <div
+        style="height: 50px; width: 50px; border: 1px solid lightgrey;"
+        v-color-me="{backgroundColor: 'green', text: 'Hi!', color: 'white'}"
+      >
+      </div>
+    </div>
+
+    <script>
+      Vue.directive('color-me', function(el, binding) {
+        console.log(binding.value.backgroundColor) // => green
+        el.style.backgroundColor = binding.value.backgroundColor
+
+        console.log(binding.value.text) // => Hi!
+        el.innerHTML = binding.value.text
+
+        console.log(binding.value.color) // => white
+        el.style.color = binding.value.color
+      })
+
+      var vm = new Vue({
+        el: '#demo5'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo5"&gt;<br />
+        &lt;div<br />
+          style="height: 50px; width: 50px; border: 1px solid lightgrey;"<br />
+          v-color-me="{backgroundColor: 'green', text: 'Hi!', color: 'white'}"<br />
+        &gt;<br />
+        &lt;/div&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.directive('color-me', function(el, binding) {
+        console.log(binding.value.backgroundColor) // => green
+        el.style.backgroundColor = binding.value.backgroundColor
+
+        console.log(binding.value.text) // => Hi!
+        el.innerHTML = binding.value.text
+
+        console.log(binding.value.color) // => white
+        el.style.color = binding.value.color
+      })
+
+      var vm = new Vue({
+        el: '#demo5'
+      })
+    </code></pre>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>State Management</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+    <style>
+      img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin: auto;
+      }
+
+      @media all and (min-width: 600px) {
+        img {
+          width: 50%;
+          height: 50%;
+        }
+      }
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>State Management</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Official Flux-Like Implementation</h3>
+
+    <p>Due to the nature of large applications, they often become quite complex, with multiple pieces of state scattered accross several components. In order to make state-management easier, Vue offers <a href="https://github.com/vuejs/vuex">Vuex</a>, an Elm-inspired state management library. Vuex integrates into <a href="https://github.com/vuejs/vue-devtools">vue-devtools</a>, providing zero-setup access to time travel.</p>
+
+    <hr />
+
+
+
+
+    <h3>State Management from Scratch</h3>
+
+    <p>The source of truth in Vue applications is the raw <b>data</b> object...a Vue instance simply proxies access to it. Pieces of state that need to be shared by multiple instances can be shared by identity:</p>
+
+    <pre><code class="language-javascript">
+      const sourceOfTruth = {};
+
+      const vmA = new Vue({
+        data: sourceOfTruth
+      })
+
+      const vmB = new Vue({
+        data: sourceOfTruth
+      })
+    </code></pre>
+
+    <p>Whenever <span class="highlight">sourceOfTruth</span> is mutated, both <span class="highlight">vmA</span> and <span class="highlight">vmB</span> will update their views automatically. Subcomponents within each of these instances have access via <span class="highlight">this.$root.$data</span>. Now we have a single source of truth, but any part of our app could change the data at any time, and there would be no trace as to where the change first occured.</p>
+
+    <p>To solve this problem we can adopt a simple <b>store pattern:</b></p>
+
+    <pre><code class="language-javascript">
+      var store = {
+        debug: true,
+        state: {
+          message: 'Hello there!'
+        },
+        setMessageAction(newValue) {
+          if (this.debug) console.log('setMessageAction triggered with ', newValue)
+          this.state.message = newValue
+        },
+        clearMessageAction() {
+          if (this.debug) console.log('clearMessageAction triggered')
+          this.state.message = ''
+        }
+      }
+    </code></pre>
+
+    <p>All actions that mutate the store's state are put inside the store itself. Centralized state management makes it easier to understand what type of mutations could happen, and how they are triggered. If something goes wrong, we'll have a log of what happened leading up to the bug.</p>
+
+    <p>Each instance/component can still own and manage its own private state:</p>
+
+    <pre><code class="language-javascript">
+      var vmA = new Vue({
+        data: {
+          privateState: {},
+          sharedState: store.state
+        }
+      })
+
+      var vmB = new Vue({
+        data: {
+          privateState: {}
+          sharedState: store.state
+        }
+      })
+    </code></pre>
+
+    <p>Diagram from Vue.js Guide:</p>
+
+    <img src="images/state.png" />
+
+    <div class="w3-panel w3-border-red w3-leftbar w3-pale-blue">
+      <p><b>Important:</b> you should never replace the original state object in your actions...the components and the store need to share reference to the same object in order for mutations to be observed.</p>
+    </div>
+
+    <p>Moving towards the convention where components are never allowed to directly mutate state that belongs to a store, but should instead dispatch events that notify the store to perform actions, we eventually arrive at the <a href="https://facebook.github.io/flux/">Flux</a> architecture. The benefit of this convention is we can record all state mutations happening to the store and implement advanced debugging helpers such as muations logs, snapshots, and history re-rolls / time travel.</p>
+
+    <p>For more on how to use this <span class="highlight">flux-like</span> state management with Vue, check out the <a href="https://vuex.vuejs.org/">vuex</a> docs.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

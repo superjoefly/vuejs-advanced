@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Plugins</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Plugins</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Writing a Plugin</h3>
+
+    <p>Plugins usually add <b>global-level functionality</b> to Vue. There is no strictly defined scope for a plugin - there are typically several types of plugins you can write:</p>
+
+    <ol>
+      <li>Add global methods or properties <span class="highlight">(vue-custom-element)</span></li>
+      <li>Add one or more global assets - directives/filters/transitions etc. <span class="highlight">(vue-touch)</span></li>
+      <li>Add some component options by global-mixin <span class="highlight">(vuex)</span></li>
+      <li>Add some Vue instance methods by attaching them to Vue.prototype</li>
+      <li>A library that provides an API of its own, while at the same time injecting some combination of the above <span class="highlight">(vue-router)</span></li>
+    </ol>
+
+    <p>A Vue.js plugin should expose an <b>install</b> method. The method will be called with the <b>Vue</b> constructor as the first argument, along with possible options:</p>
+
+    <div id="demo1">
+      <!-- MyPlugin Directive -->
+      <p v-my-directive></p>
+    </div>
+
+    <script>
+    const MyPlugin = {
+      install(Vue, options) {
+        // 1. add global method or property
+        Vue.myGlobalMethod = function() {
+          console.log('My Global Method!')
+        },
+
+        // 2. add a global asset
+        Vue.directive('my-directive', {
+          inserted(el) {
+            console.log('My Directive!')
+          }
+        }),
+
+        // 3. inject component options
+        Vue.mixin({
+          created() {
+            var myMessage = this.$options.myMessage
+            if(myMessage) {
+              console.log(myMessage)
+            }
+          }
+        }),
+
+        // 4. add an instance method
+        Vue.prototype.$myMethod = function(option) {
+          console.log(option)
+        }
+      }
+    }
+
+
+
+    // Tell Vue to use the plugin
+    Vue.use(MyPlugin);
+
+    // // Call global method
+    Vue.myGlobalMethod();
+
+
+
+    var vm = new Vue({
+      el: '#demo1',
+      myMessage: 'My Mixin!',
+      data: {
+        message: 'My Instance Method!'
+      },
+
+      // Call Plugin Instance Method
+      created() {
+        this.$myMethod(this.message)
+      }
+    })
+
+    console.log(MyPlugin);
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;!-- MyPlugin Directive --&gt;<br />
+        &lt;p v-my-directive&gt;&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------
+
+      const MyPlugin = {
+        install(Vue, options) {
+          // 1. add global method or property
+          Vue.myGlobalMethod = function() {
+            console.log('My Global Method!')
+          },
+
+          // 2. add a global asset
+          Vue.directive('my-directive', {
+            inserted(el) {
+              console.log('My Directive!')
+            }
+          }),
+
+          // 3. inject component options
+          Vue.mixin({
+            created() {
+              var myMessage = this.$options.myMessage
+              if(myMessage) {
+                console.log(myMessage)
+              }
+            }
+          }),
+
+          // 4. add an instance method
+          Vue.prototype.$myMethod = function(option) {
+            console.log(option)
+          }
+        }
+      }
+
+
+
+      // Tell Vue to use the plugin
+      Vue.use(MyPlugin);
+
+      // // Call global method
+      Vue.myGlobalMethod();
+
+
+
+      var vm = new Vue({
+        el: '#demo1',
+        myMessage: 'My Mixin!',
+        data: {
+          message: 'My Instance Method!'
+        },
+
+        // Call Plugin Instance Method
+        created() {
+          this.$myMethod(this.message)
+        }
+      })
+
+      console.log(MyPlugin);
+
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Using a Plugin</h3>
+
+    <p>We can use plugins (and optionally pass in some options) by calling the <b>Vue.use() global method:</b></p>
+
+      <pre><code class="language-javascript">
+        Vue.use(MyPlugin, { someOption: true });
+      </code></pre>
+
+    <p><b>Vue.use</b> automatically prevents you from using the same plugin more than once, so calling it multiple times on the same plugin will only install the plugin once.</p>
+
+    <p>Some plugins provided by Vue.js official plugins automatically call <b>Vue.use()</b> if <b>Vue</b> is available as a global variable. However, in module environments such as CommonJS, you always need to call <b>Vue.use()</b> explicitly:</p>
+
+    <pre><code class="language-javascript">
+      // Example using CommonJS via Browserify or Webpack
+      var Vue = require('vue')
+      var VueRouter = require('vue-router')
+
+      Vue.use(VueRouter)
+    </code></pre>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

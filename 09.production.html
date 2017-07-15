@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Production Deployment Tips</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Production Deployment Tips</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Turning on Production Mode</h3>
+
+    <p>In development mode, Vue provides a lot of warnings to help with common errors and pitfalls. These warnings become useless in production and can bloat your app's payload size. Some of these warning checks have a runtime cost that can be avoided in production mode.</p>
+
+    <p>If we are using the full build, directly including Vue via a script tag without a build tool, be sure to use the minified version <span class="highlight">(vue.min.js)</span> for production.</p>
+
+    <p>When using build tools like Webpack or Browserify, the production mode will be determined by <b>process.env.NODE_ENV</b> inside Vue's source code, and will be in development mode by default. Both of the mentioned build tools provide ways to overwrite this variable to enable Vue's production mode, and all warnings will be stripped duing the build process. All <b>vue-cli</b> templates have these pre-configured for you, but its a good idea to know how its done.</p>
+
+    <hr />
+
+
+
+
+    <h3>Using Build Tools</h3>
+
+    <h4>Webpack</h4>
+
+    <p>For Webpack, we can use the <b>DefinePlugin</b> to indicate a production environment. Example config:</p>
+
+    <pre><code class="language-javascript">
+      var webpack = require('webpack')
+
+      module.exports = {
+        // ...
+        plugins: [
+        // ...
+          new webpack.DefinePlugin({
+            'process.env': {
+              NODE_ENV: '"production"'
+            }
+          })
+        ]
+      }
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h4>Browserify</h3>
+
+      <ul>
+        <li>Run the bundling command with the actual <b>NODE_ENV</b> environment variable set to <b>"production"</b>. This tells <b>vueify</b> to avoid including hot-reload and development related code.</li>
+
+        <li>Apply a global <b>envify</b> transform to the bundle, to allow the minifier to strip out all the warnings. Example:</li>
+      </ul>
+
+      <pre><code class="language-javascript">
+        NODE_ENV=production browserify -g envify -e main.js | uglifyjs -c -m > build.js
+      </code></pre>
+
+    <hr />
+
+
+
+
+    <h4>Rollup</h3>
+
+    <p>Using <b>rollup-plugin-replace:</b></p>
+
+    <pre><code class="language-javascript">
+      const replace = require('rollup-plugin-replace')
+
+      rollup({
+        // ...
+        plugins: [
+        replace({
+          'process.env.NODE_ENV' : JSON.stringify('production')
+        })
+        ]
+      }).then(...)
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Pre-Compiling Templates</h3>
+
+    <p>When using in-DOM templates or in-JavaScript template strings, the template-to-render-function compilation is performed on the fly. This is usually fast enough, but is best avoided if you application is performance-sensitive.</p>
+
+    <p>The easiest way to pre-compile templates is to use <b>single-file-components</b> - the associated build setups automatically perform pre-compilation for you. This results in the build code containing the already compiled render functions instead of raw template strings.</p>
+
+    <p>If using Webpack, we can use <b>vue-template-loader</b>, which transforms the template files into JavaScript render functions during the build step.</p>
+
+    <hr />
+
+
+
+
+    <h3>Extracting Component CSS</h3>
+
+    <p>When using single file components, the CSS inside components are injected dynamically as <b>style</b> tags in JavaScript. This has a small runtime cost, and if you are server-side rendering, it will cause a "flash" of unstyled content. Extracting the CSS across all components into the same file will avoid this issue, and will result in better CSS minification and caching.</p>
+
+    <p>Following is an example <b>Webpack 2.x</b> manual configuration:</p>
+
+    <pre><code class="language-javascript">
+      // webpack.config.js
+      var ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+      module.exports = {
+        // other options...
+        module: {
+          rules: [
+          {
+            test: /\.vue$/,
+            loader: 'vue-loader',
+            options: {
+              loaders: {
+                css: ExtractTextPlugin.extract({
+                  use: 'css-loader',
+                  fallback: 'vue-style-loader' // <= dependency of vue loader
+                })
+              }
+            }
+          }
+          ]
+        },
+        plugins: [
+        new ExtractTextPlugin('style.css')
+        ]
+      }
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Tracking Runtime Errors</h3>
+
+    <p>If a runtime error occurs during a component's render, it will be passed to the global <b>Vue.config.errorHandler</b> config function if it has been set. This hook can be leveraged with an error-tracking service like Sentry, which provides an <a href="https://sentry.io/for/vue/">official integration</a> for Vue.</p>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

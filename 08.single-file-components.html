@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Single File Components</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Single File Components</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Introduction</h3>
+
+    <p>In many simple Vue projects, global components are defined using <b>Vue.component</b>, followed by <b>new Vue({el: '#container'})</b> to target a container element i the body of every page.</p>
+
+    <p>This works well for small to medium sized projects, but in more complex projects, and when the entire frontend is driven by JavaScript, certain disadvantages become apparent:</p>
+
+    <ul>
+      <li><b>Global definitions</b> force unique names for each component</li>
+      <li><b>String templates</b> lack syntax highlighting and require slashes for multiline HTML</li>
+      <li><b>CSS</b> is not modularized into components</li>
+      <li><b>No build setup</b> restricts us to HTML and ES5 JavaScript, rather than preprocessors like Pug and Babel</li>
+    </ul>
+
+    <p>The above disadvantages are solved by using <b>single-file components</b> with a <b>.vue</b> extension, which is made possible with build tools such as Webpack or Browserify.</p>
+
+    <p>Following is an example of a <b>.vue single-file component</b>:</p>
+
+    <pre><code class="language-javascript">
+      // Hello.vue
+        <br />
+      &lt;template&gt;<br />
+        &lt;p&gt;{{ greeting }} World!&lt;/p&gt;<br />
+      &lt;/template&gt;<br />
+        <br />
+      &lt;script&gt;<br />
+        export default {<br />
+          data() {<br />
+            return {<br />
+              greeting: 'Hello'<br />
+            }<br />
+          }<br />
+        }<br />
+      &lt;/script&gt;<br />
+        <br />
+      &lt;style scoped&gt;<br />
+        p {<br />
+          font-size: 1.5em;<br />
+          text-align: center;<br />
+          color: orange<br />
+        }<br />
+      &lt;/style&gt;
+    </code></pre>
+
+    <p>This provides for:</p>
+
+    <ul>
+      <li>Complete syntax highlighting</li>
+      <li>CommonJS modules</li>
+      <li>Component-scoped CSS</li>
+    </ul>
+
+    <hr />
+
+
+
+
+    <h3>Access to Pre-processors</h3>
+
+    <p>Now, with single-file components, we have access to pre-processors such as Pug, Babel (with ES2015 modules), and Stylus for cleaner and more feature-rich components.</p>
+
+    <pre><code class="language-javascript">
+      // Hello Vue
+        <br />
+      &lt;template lang='jade'&gt;<br />
+        div<br />
+          p {{ greeting }} World!<br />
+          other-component<br />
+      &lt;/template&gt;<br />
+        <br />
+      &lt;script&gt;<br />
+        import OtherComponent from './OtherComponent.vue'<br />
+          <br />
+        export default {<br />
+          data() {<br />
+            return {<br />
+              greeting: 'Hello'<br />
+            }<br />
+          },<br />
+          components: {<br />
+            OtherComponent<br />
+          }<br />
+        }<br />
+      &lt;/script&gt;<br />
+        <br />
+      &lt;style lang="stylus" scoped&gt;<br />
+        p<br />
+          font-size: 1.5em<br />
+          text-align: center<br />
+          color: orange<br />
+      &lt;/style&gt;
+    </code></pre>
+
+    <p>The specific languages are just examples. If using Webpack with <b>vue-loader</b>, it also has first-class support for CSS Modules.</p>
+
+    <hr />
+
+
+
+
+    <h3>Separation of Concerns</h3>
+
+    <p>Be aware that separation of concerns is not equal to separation of file types. Instead of dividing the code base into three huge layers that interweave, it makes more sense to divide them into loosely-coupled components. Inside a component, its template, logic and styles are inherently coupled making the component more cohesive and easier to maintain.</p>
+
+    <p>Even if we don't like the idea of single-file-components, we can still leverage the hot-reloading and pre-compilation features by separating our JavaScript into separate files:</p>
+
+    <pre><code class="language-javascript">
+      &lt;!-- my-component.vue --&gt;<br />
+      &lt;template&gt;<br />
+        &lt;div&gt;This will be pre-compiled&lt;/div&gt;<br />
+      &lt;/template&gt;<br />
+      <br />
+      &lt;script src="./my-component.js"&gt;&lt;/script&gt;<br />
+      &lt;style src="./my-component.css"&gt;&lt;/style&gt;
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Module Build Systems in JavaScript</h3>
+
+    <p>With <b>.vue</b> components, it is necessary to learn some additional tools such as <b>Node Package Manager (NPM)</b> and <b>Modern JavaScript with ES2015/16</b> features.</p>
+
+    <p>A good starting point for new users is the <a href="https://github.com/vuejs-templates/webpack-simple" target="_blank">webpack-simple</a> template provided on Github. This template uses <b>Webpack</b> which is a module bundler that takes a number of "modules" and bundles them together in your final application.</p>
+
+    <p>For <b>advanced users</b> it is recommeded to browse <a href="https://github.com/vuejs-templates">github.com/vuejs-templates</a> and select the template that's right for you. Just follow the instructions in the <b>README</b> file to generate a new project with <b>vue-cli</b>.</p>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

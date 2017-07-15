@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mixins</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Mixins</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Basics</h3>
+
+    <p>Mixins are used to distribute reusable functionalities for Vue components. A mixin object can contain any component options. When a component uses a mixin, all options in the mixin will be mixed-in with the component's own options:</p>
+
+    <!-- Render HTML -->
+
+    <div id="demo1">
+      <demo-one></demo-one>
+    </div>
+
+    <script>
+      // Define mixin object
+      var myMixin = {
+        created() {
+          this.hello()
+        },
+        methods: {
+          hello() {
+            this.message = 'Hello from mixin!'
+          }
+        }
+      }
+
+      // Define component that uses the mixin
+      Vue.component('demo-one', {
+        template: `
+          <div>{{message}}</div>
+        `,
+        mixins: [myMixin],
+        data() {
+          return {
+            message: ''
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo1'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;demo-one&gt;&lt;/demo-one&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      // Define mixin object
+      var myMixin = {
+        created() {
+          this.hello()
+        },
+        methods: {
+          hello() {
+            this.message = 'Hello from mixin!'
+          }
+        }
+      }
+
+      // Define component that uses the mixin
+      Vue.component('demo-one', {
+        template: `
+          <div>{{message}}</div>
+        `,
+        mixins: [myMixin],
+        data() {
+          return {
+            message: ''
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo1'
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Option Merging</h3>
+
+    <p>When a mixin and the component itself contain overlapping options, they will be merged using appropriate strategies. For example, hook functions with the same name are merged into an array so that all of them will be called. Mixin hooks will be called before the component's own hooks.</p>
+
+    <p>Options that expect object values, for example <b>methods</b>, <b>components</b> and <b>directives</b>, will be merged into the same object. The component's options will take priority when there are conflicting keys in these objects.</p>
+
+    <!-- Render HTML -->
+
+    <div id="demo2">
+      <demo-two></demo-two>
+    </div>
+
+    <script>
+      var mixin = {
+        created() {
+          console.log('Mixin hook called!'); // => Mixin hook called!
+          this.message="Mixin hook called!"; // Is overwritten
+        }
+      }
+
+      Vue.component('demo-two', {
+        template: `
+          <div>{{message}}</div>
+        `,
+        mixins: [mixin],
+        created() {
+          console.log('Component hook called!'); // => Component hook called!
+          this.message="Component hook called!";
+        },
+        data() {
+          return {
+            message: ''
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo2'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo2"&gt;<br />
+        &lt;demo-two&gt;&lt;/demo-two&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var mixin = {
+        created() {
+          console.log('Mixin hook called!'); // => Mixin hook called!
+          this.message="Mixin hook called!"; // Is overwritten
+        }
+      }
+
+      Vue.component('demo-two', {
+        template: `
+          <div>{{message}}</div>
+        `,
+        mixins: [mixin],
+        created() {
+          console.log('Component hook called!'); // => Component hook called!
+          this.message="Component hook called!";
+        },
+        data() {
+          return {
+            message: ''
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo2'
+      })
+    </code></pre>
+
+    <p><b>Note:</b> the same merge strategies are used in <b>Vue.extend()</b>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Global Mixins</h3>
+
+    <p>We can also apply global mixins, however, use caution...once you apply a mixin globally, it will affect every Vue instance created afterwards. When used properly, global mixins can be used to inject processing logic for custom options:</p>
+
+    <!-- Render HTML -->
+
+    <div id="demo3"></div>
+    <div id="demo4"></div>
+
+    <script>
+      // Global Mixin executed on each Vue instance
+      Vue.mixin({
+        created() {
+          // Inject custom option
+          var myOption = this.$options.myOption
+          if (myOption) {
+            console.log(myOption)
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo3',
+        // Set value of custom option
+        myOption: 'hello there!'
+      })
+
+      var vm = new Vue({
+        el: '#demo4',
+        // Set value of custom option
+        myOption: {
+          name: 'Joey',
+          id: 333
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo3"&gt;&lt;/div&gt;<br />
+      &lt;div id="demo4"&gt;&lt;/div&gt;
+
+      -------------------------------
+
+      // Global Mixin executed on each Vue instance
+      Vue.mixin({
+        created() {
+          // Inject custom option
+          var myOption = this.$options.myOption
+          if (myOption) {
+            console.log(myOption)
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo3',
+        // Set value of custom option
+        myOption: 'hello there!'
+      })
+
+      var vm = new Vue({
+        el: '#demo4',
+        // Set value of custom option
+        myOption: {
+          name: 'Joey',
+          id: 333
+        }
+      })
+    </code></pre>
+
+    <p>It is recommended to use global mixins sparsely and carefully because it affects <b>every</b> single Vue instance created, including third party components. In most cases it should only be used for custom option handling like in the example above. It is also advised to ship global mixins as <b>plugins</b> to avoid duplicate application.</p>
+
+    <hr />
+
+
+
+
+    <h3>Custom Option Merge Strategies</h3>
+
+    <p>When <b>custom options</b> are merged, they use the default strategy, which simply overwrites the existing value. If we want custom options to be merged using custom logic, we need to attach a function to <b>Vue.config.optionMergeStrategies</b>:</p>
+
+    <pre><code class="language-javascript">
+      Vue.config.optionMergeStrategies.myOption = function(toVal, fromVal) {
+        // return mergedVal
+      }
+    </code></pre>
+
+    <p>For most object-based options, we can use the same strategy used my <b>methods</b>:</p>
+
+    <pre><code class="language-javascript">
+      var strategies = Vue.config.optionMergeStrategies
+      strategies.myOption = strategies.methods
+    </code></pre>
+
+    <p>Following is a more advanced example from <b>Vuex's 1.x</b> merging strategy:</p>
+
+    <pre><code class="language-javascript">
+      const merge = Vue.config.optionMergeStrategies.computed
+      Vue.config.optionMergeStrategies.vuex = function(toVal, fromFal) {
+        if (!toVal) return fromVal
+        if (!fromVal) return toVal
+        return {
+          getters: merge(toVal.getters, fromVal.getters),
+          state: merge(toVal.state, fromVal.state),
+          actions: merge(toVal.actions, fromVal.actions)
+        }
+      }
+    </code></pre>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

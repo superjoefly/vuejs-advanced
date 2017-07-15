@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Render Functions</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Render Functions</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Basics</h3>
+
+    <p><b>Render-functions</b> are a closer-to-the-compiler alternative to templates. They are useful when we need the full programatic power of JavaScript.</p>
+
+    <p>Render-functions require greater familiarity with Vue instance properties.</p>
+
+    <p><b>It is recommended to read through Vue's <a href="#">instance properties api</a> before diving into render functions.</b></p>
+
+    <h3><b>Incomplete Example</b>: generate anchored headings using a <b>render-function</b>:</h3>
+
+    <div id="demo1">
+      <anchored-heading :level="4">Level 4 Heading</anchored-heading>
+      <anchored-heading :level="5">Level 5 Heading</anchored-heading>
+      <anchored-heading :level="6">Level 6 Heading</anchored-heading>
+    </div>
+
+    <script>
+      Vue.component('anchored-heading', {
+        render(createElement) {
+          return createElement(
+            'h' + this.level, // tag name
+            this.$slots.default // array of children
+          )
+        },
+        props: {
+          level: {
+            type: Number,
+            required: true
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo1'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;anchored-heading :level="4"&gt;Level 4 Heading&lt;/anchored-heading&gt;<br />
+        &lt;anchored-heading :level="5"&gt;Level 5 Heading&lt;/anchored-heading&gt;<br />
+        &lt;anchored-heading :level="6"&gt;Level 6 Heading&lt;/anchored-heading&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+        Vue.component('anchored-heading', {
+          render(createElement) {
+            return createElement(
+              'h' + this.level, // tag name
+              this.$slots.default // array of children
+            )
+          },
+          props: {
+            level: {
+              type: Number,
+              required: true
+            }
+          }
+        });
+
+        var vm = new Vue({
+          el: '#demo1'
+        })
+    </code></pre>
+
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>createElement <b>Arguments</b></h3>
+
+    <p>Another thing we need to become familiar with is how to use template features in the <b>createElement</b> function. Following are the arguments that createElement accepts:</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        // @returns {VNode}
+        createElement(
+          // {String | Object | Function}
+          // An HTML tag name, component options, or function
+          // returning one of these. Required.
+          'div',
+
+          // {Object}
+          // A data object corresponding to the attributes
+          // you would use in a template. Optional.
+          {
+            // (details in next section below)
+          },
+
+          // {String | Array}
+          // Children VNodes. Optional.
+          [
+            createElement('h1', 'hello world'),
+            createElement(MyComponent, {
+              props: {
+                someProp: 'foo'
+              }
+            }),
+            'bar'
+          ]
+        )
+      </code></pre>
+    </div>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Data Object in-Depth</h3>
+
+    <p>Similar to how <b>v-bind:class</b> and <b>v-bind:style</b> have special treatment in templates, they have their own top-level fields in VNode data objects. This allows us to bind normal HTML attributes as well as DOM properties such as <b>innerHTML</b> (this would replace the <b>v-html</b> directive):</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        {
+          // Same API as `v-bind:class`
+          'class': {
+            foo: true,
+            bar: false
+          },
+
+          // Same API as `v-bind:style`
+          style: {
+            color: 'red',
+            fontSize: '14px'
+          },
+
+          // Normal HTML attributes
+          attrs: {
+            id: 'foo'
+          },
+
+          // Component props
+          props: {
+            myProp: 'bar'
+          },
+
+          // DOM properties
+          domProps: {
+            innerHTML: 'baz'
+          },
+
+          // Event handlers are nested under "on", though
+          // modifiers such as in v-on:keyup.enter are not supported. We would have to manually check the keyCode in the handler instead.
+          on: {
+            click: this.clickHandler
+          },
+
+          // For components only. Allows you to listen to
+          // native events, rather than events emitted from
+          // the component using vm.$emit.
+          nativeOn: {
+            click: this.nativeClickHandler
+          },
+
+          // Custom directives. Note that the binding's
+          // oldValue cannot be set, as Vue keeps track
+          // of it for you.
+          directives: [
+            {
+              name: 'my-custom-directive',
+              value: '2',
+              expression: '1 + 1',
+              arg: 'foo',
+              modifiers: {
+                bar: true
+              }
+            }
+          ],
+
+          // Scoped slots in the form of
+          // { name: props => VNode | Array< Vnode > }
+          scopedSlots: {
+            default: props => createElement('span', props.text)
+          },
+
+          // The name of a slot if this component
+          // is the child of another component
+          slot: 'name-of-slot'
+          // Other special top-level properties
+          key: 'myKey',
+          ref: 'myRef'
+        }
+      </code></pre>
+    </div>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Complete Example</h3>
+
+    <p>Now we can finish the component we started in the first example:</p>
+
+    <div id="demo2">
+      <anchored-heading :level="4">Level 4 Heading</anchored-heading>
+      <anchored-heading :level="5">Level 5 Heading</anchored-heading>
+      <anchored-heading :level="6">Level 6 Heading</anchored-heading>
+    </div>
+
+    <script>
+      var getChildrenTextContent = function(children) {
+        return children.map(function(node) {
+          return node.children
+          ? getChildrenTextContent(node.children)
+          : node.text
+        }).join('')
+      }
+
+      Vue.component('anchored-heading', {
+        render: function(createElement) {
+          // create kebabCase id
+          var headingId = getChildrenTextContent(this.$slots.default)
+          .toLowerCase()
+          .replace(/\W+/g, '-')
+          .replace(/(^\-|\-$)/g, '')
+
+          return createElement(
+            'h' + this.level,
+            [
+              createElement('a', {
+                attrs: {
+                  name: headingId,
+                  href: '#' + headingId
+                }
+              }, this.$slots.default)
+            ]
+          )
+        },
+        props: {
+          level: {
+            type: Number,
+            required: true
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo2'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo2"&gt;<br />
+        &lt;anchored-heading :level="4"&gt;Level 4 Heading&lt;/anchored-heading&gt;<br />
+        &lt;anchored-heading :level="5"&gt;Level 5 Heading&lt;/anchored-heading&gt;<br />
+        &lt;anchored-heading :level="6"&gt;Level 6 Heading&lt;/anchored-heading&gt;<br />
+      &lt;/div&gt;
+
+      -----------------------------------
+
+        var getChildrenTextContent = function(children) {
+          return children.map(function(node) {
+            return node.children
+            ? getChildrenTextContent(node.children)
+            : node.text
+          }).join('')
+        }
+
+        Vue.component('anchored-heading', {
+          render: function(createElement) {
+            // create kebabCase id
+            var headingId = getChildrenTextContent(this.$slots.default)
+            .toLowerCase()
+            .replace(/\W+/g, '-')
+            .replace(/(^\-|\-$)/g, '')
+
+            return createElement(
+              'h' + this.level,
+              [
+                createElement('a', {
+                  attrs: {
+                    name: headingId,
+                    href: '#' + headingId
+                  }
+                }, this.$slots.default)
+              ]
+            )
+          },
+          props: {
+            level: {
+              type: Number,
+              required: true
+            }
+          }
+        });
+
+        var vm = new Vue({
+          el: '#demo2'
+        })
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Constraints</h3>
+
+    <p>All VNodes in the component tree must be unique. The following render function is invalid:</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        render: function(createElement) {
+          var myParagraphVNode = createElement('p', 'hi')
+          return createElement('div', [
+          // Duplicate VNodes!
+          myParagraphVNode, myParagraphVNode
+          ])
+        }
+      </code></pre>
+    </div>
+
+    <p>If we want to duplicate the same element/component multiple times, we can use a factory function. The following render function is a valid way of rendering multiple identical paragraphs:</p>
+
+    <div>
+      <pre><code class="language-javascript">
+        render: function(createElement) {
+          return createElement('div',
+            Array.apply(null, { length: 20 }).map(function() {
+              return createElement('p', 'hi')
+            })
+          )
+        }
+      </code></pre>
+    </div>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Replacing Template Features with Plain JavaScript</h3>
+
+    <p><b>v-if</b> and <b>v-for</b></p>
+
+    <p>Whenever something can be easily accomplished in plain JavaScript, Vue render functions do not provide a proprietary alternative:</p>
+
+    <div id="demo3">
+        <!-- <ul v-if="items.length">
+          <li v-for="item in items">{{ item.name }}</li>
+        </ul>
+        <p v-else>No items in list.</p> -->
+
+      <my-list :items="items"></my-list>
+    </div>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo3"&gt;<br />
+          &lt;!-- &lt;ul v-if="items.length"&gt;<br />
+            &lt;li v-for="item in items"&gt;{{ item.name }}&lt;/li&gt;<br />
+          &lt;/ul&gt;<br />
+          &lt;p v-else&gt;No items in list.&lt;/p&gt; --&gt;<br />
+  <br />
+        &lt;my-list :items="items"&gt;&lt;/my-list&gt;<br />
+      &lt;/div&gt;
+    </code></pre>
+
+    <p>This can be rewritten with JavaScript's <b>if/else</b> and <b>map</b> in a render function:</p>
+
+    <script>
+      Vue.component('my-list', {
+        render: function(createElement) {
+          if (this.items.length) {
+            return createElement('ul', this.items.map(function(item) {
+              return createElement('li', item.name)
+            }))
+          } else {
+            return createElement('p', 'No items in list.')
+          }
+        },
+        props: ['items']
+      });
+
+      var vm = new Vue({
+        el: '#demo3',
+        data: {
+          items: [
+            {name: 'John'},
+            {name: 'Dan'},
+            {name: 'Greg'}
+          ]
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+        Vue.component('my-list', {
+          render: function(createElement) {
+            if (this.items.length) {
+              return createElement('ul', this.items.map(function(item) {
+                return createElement('li', item.name)
+              }))
+            } else {
+              return createElement('p', 'No items in list.')
+            }
+          },
+          props: ['items']
+        });
+
+        var vm = new Vue({
+          el: '#demo3',
+          data: {
+            items: [
+              {name: 'John'},
+              {name: 'Dan'},
+              {name: 'Greg'}
+            ]
+          }
+        })
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3><b>v-model</b></h3>
+
+    <p>There is no direct <b>v-model</b> counterpart in render functions - we will have to implement the logic ourselves:</p>
+
+    <div id="demo4">
+      <!-- <my-input v-model="message"></my-input> -->
+      <my-input @input="renderMessage"></my-input>
+      <p>{{message}}</p>
+    </div>
+
+    <script>
+      Vue.component('my-input', {
+        render: function(createElement) {
+          var self = this;
+          return createElement('input', {
+            domProps: {
+              value: self.value
+            },
+            on: {
+              input: function(event) {
+                self.value = event.target.value;
+                self.$emit('input', self.value);
+              }
+            }
+          })
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          message: ''
+        },
+        methods: {
+          renderMessage(value) {
+            this.message = value.toUpperCase();
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo4"&gt;<br />
+        &lt;!-- &lt;my-input v-model="message"&gt;&lt;/my-input&gt; --&gt;<br />
+        &lt;my-input @input="renderMessage"&gt;&lt;/my-input&gt;<br />
+        &lt;p&gt;{{message}}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+        Vue.component('my-input', {
+          render: function(createElement) {
+            var self = this;
+            return createElement('input', {
+              domProps: {
+                value: self.value
+              },
+              on: {
+                input: function(event) {
+                  self.value = event.target.value;
+                  self.$emit('input', self.value);
+                }
+              }
+            })
+          }
+        });
+
+        var vm = new Vue({
+          el: '#demo4',
+          data: {
+            message: ''
+          },
+          methods: {
+            renderMessage(value) {
+              this.message = value.toUpperCase();
+            }
+          }
+        })
+    </code></pre>
+
+    <p>In the example above, we have more control over the interaction details compared to v-model.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Event and Key Modifiers</h3>
+
+    <p>For the <b>.capture</b> and <b>.once</b> event modifiers, Vue offers prefixes that can be used with <b>on</b>:</p>
+
+    <table class="w3-table w3-striped" style="width: 50%;">
+      <tr>
+        <th>Modifiers</th>
+        <th>Prefix</th>
+      </tr>
+      <tr>
+        <td>.capture</td>
+        <td>!</td>
+      </tr>
+      <tr>
+        <td>.once</td>
+        <td>~</td>
+      </tr>
+      <tr>
+        <td>.capture.once or .once.capture</td>
+        <td>~!</td>
+      </tr>
+    </table>
+
+    <br />
+
+    <!-- Add Prismjs -->
+
+    <div> Example:
+      <pre><code class="language-javascript">
+        on: {
+          '!click': this.doThisInCaptureMode,
+          '~keyup': this.doThisOnce,
+          '~!mouseover': this.doThisOnceInCaptureMode
+        }
+      </code></pre>
+    </div>
+
+    <p>For all other event and key modifiers, no proprietary prefix is necessary. We can simply use event methods in the handler:</p>
+
+    <div>
+      <table class="w3-table w3-striped" style="width: 50%;">
+        <tr>
+          <th>Modifier(s)</th>
+          <th>Equivalent in Handler</th>
+        </tr>
+        <tr>
+          <td>.stop</td>
+          <td>event.stopPropogation()</td>
+        </tr>
+        <tr>
+          <td>.prevent</td>
+          <td>event.preventDefault()</td>
+        </tr>
+        <tr>
+          <td>.self</td>
+          <td>if (event.target !== event.currentTarget) return</td>
+        </tr>
+        <tr>
+          <td>Keys: .enter, .13</td>
+          <td>if (event.keyCode !== 13) return (change 13 to another keyCode for other key modifiers)</td>
+        </tr>
+        <tr>
+          <td>Modifiers Keys: .ctrl, .alt, .shift, .meta</td>
+          <td>if (!event.ctrlKey) return (change ctrlKey to altKey, shiftKey, or metaKey, respectively)</td>
+        </tr>
+      </table>
+    </div>
+
+    <p>Following is an example using all of the above modifiers together:</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        on: {
+          keyup: function(event) {
+            // Abort if the element emitting the event is not
+            // the element the event is bound to
+            if (event.target !== event.currentTarget) return
+
+            // Abort if the key that went up is not the enter
+            // key (13) and the shift key was not held down
+            // at the same time
+            if (!event.shiftKey || event.keyCode !== 13) return
+
+            // Stop event propogation
+            event.stopPropogation()
+
+            // Prevent the default keyup handler for this element
+            event.preventDefault()
+            // ...
+          }
+        }
+      </code></pre>
+    </div>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Slots</h3>
+
+    <p>We can access static slot contents as Arrays of VNodes from <b>this.$slots</b>:</p>
+
+    <div id="demo5">
+      <static-slot>Something</static-slot>
+    </div>
+
+    <script>
+      Vue.component('static-slot', {
+        // <div><slot></slot></div>
+        render: function(createElement) {
+          return createElement('div', this.$slots.default)
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo5'
+      })
+    </script>
+
+
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo5"&gt;<br />
+        &lt;static-slot&gt;Something&lt;/static-slot&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+      Vue.component('static-slot', {
+        // &lt;div&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/div&gt;
+        render: function(createElement) {
+          return createElement('div', this.$slots.default)
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo5'
+      })
+    </code></pre>
+
+
+
+
+
+    <p>We can access scoped slots as functions that retur VNodes from <b>this.$scopedSlots:</b></p>
+
+    <div id="demo6">
+      <scoped-slot>
+        <template scope="props">
+          <span>Hello from parent!</span>
+          <br />
+          <span>{{props.text}}</span>
+        </template>
+      </scoped-slot>
+    </div>
+
+    <script>
+      Vue.component('scoped-slot', {
+        render(createElement) {
+          // <div><slot :text="message"></slot></div>
+          return createElement('div', [
+            this.$scopedSlots.default({
+              text: this.message
+            })
+          ])
+        },
+        data() {
+          return {
+            message: 'Hello from child!'
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo6'
+      })
+    </script>
+
+
+
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo6"&gt;<br />
+        &lt;scoped-slot&gt;<br />
+          &lt;template scope="props"&gt;<br />
+            &lt;span&gt;Hello from parent!&lt;/span&gt;<br />
+            &lt;br /&gt;<br />
+            &lt;span&gt;{{props.text}}&lt;/span&gt;<br />
+          &lt;/template&gt;<br />
+        &lt;/scoped-slot&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+      Vue.component('scoped-slot', {
+        render(createElement) {
+          // &lt;div&gt;&lt;slot :text="message"&gt;&lt;/slot&gt;&lt;/div&gt;
+          return createElement('div', [
+            this.$scopedSlots.default({
+              text: this.message
+            })
+          ])
+        },
+        data() {
+          return {
+            message: 'Hello from child!'
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo6'
+      })
+    </code></pre>
+
+    <p>We can pass scoped slots to a child component using render functions by using the <b>scopedSlots</b> field in VNode data:</p>
+
+    <!-- Convert to HTML -->
+
+    <div id="demo7">
+      <scoped-example>
+        <template scope="props">
+          <p>{{props.text}}</p>
+        </template>
+      </scoped-example>
+    </div>
+
+    <script>
+      Vue.component('child', {
+        template: `
+          <p>This is the child!</p>
+        `
+      });
+      Vue.component('scoped-example', {
+        render(createElement) {
+          return createElement('div', [
+            this.$scopedSlots.default({
+              text: this.message
+            }),
+            createElement('child', {
+              scopedSlots: {
+                default: function(props) {
+                  return createElement('span', props.text)
+                }
+              }
+            })
+          ])
+        },
+        data() {
+          return {
+            message: 'This is the parent!'
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo7'
+      })
+    </script>
+
+    <!-- Add prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo7"&gt;<br />
+        &lt;scoped-example&gt;<br />
+          &lt;template scope="props"&gt;<br />
+            &lt;p&gt;{{props.text}}&lt;/p&gt;<br />
+          &lt;/template&gt;<br />
+        &lt;/scoped-example&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+      Vue.component('child', {
+        template: `
+          &lt;p&gt;This is the child!&lt;/p&gt;
+        `
+      });
+      Vue.component('scoped-example', {
+        render(createElement) {
+          return createElement('div', [
+            this.$scopedSlots.default({
+              text: this.message
+            }),
+            createElement('child', {
+              scopedSlots: {
+                default: function(props) {
+                  return createElement('span', props.text)
+                }
+              }
+            })
+          ])
+        },
+        data() {
+          return {
+            message: 'This is the parent!'
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo7'
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>JSX</h3>
+
+    <p>We can use a <a href="https://github.com/vuejs/babel-plugin-transform-vue-jsx">Babel Plugin</a> to use JSX with Vue so that our syntax looks closer to templates:</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        import AnchoredHeading from './AnchoredHeading.vue'
+
+        new Vue({
+          el: '#demo',
+          render(h) {
+            return (
+            < AnchoredHeading level={1}>
+              < span>Hello< /span> world!
+            < /AnchoredHeading>
+            )
+          }
+        })
+      </code></pre>
+    </div>
+
+    <p>Aliasing <b>createElement</b> to <b>h</b> is a common convention you'll see in the Vue ecosystem and is required for JSX. If <b>h</b> is not available in the scope, your app will throw an error.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Functional Components</h3>
+
+    <p>Components like the anchored heading component we created earlier that don't manage any state, watch any state passed to it, or have any lifecycle methods, can be marked as <b>functional</b>. This means they are stateless (no <b>data</b>) and instanceless (no <b>this</b> context). A functional component looks like this:</p>
+
+    <!-- Add Prismjs -->
+
+    <div>
+      <pre><code class="language-javascript">
+        Vue.component('my-component', {
+          functional: true,
+
+          // To compensate for the lack of an instance,
+          // we are now provided with a 2nd context argument.
+          render: function(createElement, context) {
+            // ...
+          },
+
+          // Props are optional
+          props: {
+            // ...
+          }
+        });
+      </code></pre>
+    </div>
+
+    <p>Everything the component needs is passed through the <b>context</b>, which is an object containing:</p>
+
+    <ul>
+      <li><b>props</b>: An object of the provided props</li>
+      <li><b>children</b>: An array of the VNode children</li>
+      <li><b>slots</b>: A function returning a slots object</li>
+      <li><b>data</b>: The entire data object passed to the component</li>
+      <li><b>parent</b>: A reference to the parent component</li>
+      <li><b>listeners</b>: An object containing parent-registered event listeners. This is an alias to <b>data.on</b></li>
+      <li><b>injections</b>: If using the <b>inject</b> option, this will contain resolved injections</li>
+    </ul>
+
+    <p>After adding <b>functional: true</b>, updating the render function of our anchored heading component would simply require adding the <b>context</b> argument, updating <b>this.$slots.default</b> to <b>context.children</b>, and then updating <b>this.level</b> to <b>context.props.level</b>.</p>
+
+
+    <div id="demo8">
+      <anchored-heading-b :level="4">Level 4 Heading</anchored-heading-b>
+      <anchored-heading-b :level="5">Level 5 Heading</anchored-heading-b>
+      <anchored-heading-b :level="6">Level 6 Heading</anchored-heading-b>
+    </div>
+
+    <script>
+      var getChildrenTextContent = function(children) {
+        return children.map(function(node) {
+          return node.children
+          ? getChildrenTextContent(node.children)
+          : node.text
+        }).join('')
+      }
+
+      Vue.component('anchored-heading-b', {
+        functional: true,
+        render: function(createElement, context) {
+          // create kebabCase id
+          var headingId = getChildrenTextContent(context.children)
+          .toLowerCase()
+          .replace(/\W+/g, '-')
+          .replace(/(^\-|\-$)/g, '')
+
+          return createElement(
+            'h' + context.props.level,
+            [
+              createElement('a', {
+                attrs: {
+                  name: headingId,
+                  href: '#' + headingId
+                }
+              }, context.children)
+            ]
+          )
+        },
+        props: {
+          level: {
+            type: Number,
+            required: true
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo8'
+      })
+    </script>
+
+    <!-- Add prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo8"&gt;<br />
+        &lt;anchored-heading-b :level="4"&gt;Level 4 Heading&lt;/anchored-heading-b&gt;<br />
+        &lt;anchored-heading-b :level="5"&gt;Level 5 Heading&lt;/anchored-heading-b&gt;<br />
+        &lt;anchored-heading-b :level="6"&gt;Level 6 Heading&lt;/anchored-heading-b&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+      var getChildrenTextContent = function(children) {
+        return children.map(function(node) {
+          return node.children
+          ? getChildrenTextContent(node.children)
+          : node.text
+        }).join('')
+      }
+
+      Vue.component('anchored-heading-b', {
+        functional: true,
+        render: function(createElement, context) {
+          // create kebabCase id
+          var headingId = getChildrenTextContent(context.children)
+          .toLowerCase()
+          .replace(/\W+/g, '-')
+          .replace(/(^\-|\-$)/g, '')
+
+          return createElement(
+            'h' + context.props.level,
+            [
+              createElement('a', {
+                attrs: {
+                  name: headingId,
+                  href: '#' + headingId
+                }
+              }, context.children)
+            ]
+          )
+        },
+        props: {
+          level: {
+            type: Number,
+            required: true
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo8'
+      })
+    </code></pre>
+
+    <p>Functional components are cheaper because they are just functions, however, they <b>won't show up in the Vuejs Chrome dev tools component tree</b>.</p>
+
+    <p>Functional components are also very useful as <b>wrapper components</b>. For example when we need to:</p>
+
+    <ul>
+      <li>Programatically choose one of several other components to delegate to</li>
+      <li>Manipulate children, props, or data before passing them on to a child component</li>
+    </ul>
+
+    <p>Following is an example of a <b>smart-list</b> component that delegates to more specific components, depending on the props passed to it:</p>
+
+    <!-- Convert to HTML -->
+
+    <div id="demo9">
+      <smart-list :items="items" :is-ordered="true"></smart-list>
+    </div>
+
+
+    <script>
+    var EmptyList = { /* ... */ }
+    var TableList = { /* ... */ }
+    var OrderedList = { /* ... */ }
+    var UnorderedList = { /* ... */ }
+
+    Vue.component('smart-list', {
+      functional: true,
+      render: function (createElement, context) {
+        function appropriateListComponent() {
+          var items = context.props.items;
+
+          if (items.length === 0)           return EmptyList
+          if (typeof items[0] === 'Object') return TableList
+
+          // Example rendering unordered-list
+          if (context.props.isOrdered)      return OrderedList =
+            Vue.component('ordered-list', {
+              render: function(createElement) {
+                return createElement('ol', items.map(function(item) {
+                  return createElement('li', item.name)
+                }))
+              }
+            })
+
+          return UnorderedList
+        }
+
+        return createElement(
+          appropriateListComponent(),
+          context.data,
+          context.children
+        )
+      },
+      props: {
+        items: {
+          type: Array,
+          required: true
+        },
+        isOrdered: Boolean
+      }
+    });
+
+      var vm = new Vue({
+        el: '#demo9',
+        data: {
+          items: [
+            {name: 'John'},
+            {name: 'Henry'}
+          ]
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo9"&gt;<br />
+        &lt;smart-list :items="items" :is-ordered="true"&gt;&lt;/smart-list&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------------
+
+      var EmptyList = { /* ... */ }
+      var TableList = { /* ... */ }
+      var OrderedList = { /* ... */ }
+      var UnorderedList = { /* ... */ }
+
+      Vue.component('smart-list', {
+        functional: true,
+        render: function (createElement, context) {
+          function appropriateListComponent() {
+            var items = context.props.items;
+
+            if (items.length === 0)           return EmptyList
+            if (typeof items[0] === 'Object') return TableList
+
+            // Example rendering unordered-list
+            if (context.props.isOrdered)      return OrderedList =
+              Vue.component('ordered-list', {
+                render: function(createElement) {
+                  return createElement('ol', items.map(function(item) {
+                    return createElement('li', item.name)
+                  }))
+                }
+              })
+
+            return UnorderedList
+          }
+
+          return createElement(
+            appropriateListComponent(),
+            context.data,
+            context.children
+          )
+        },
+        props: {
+          items: {
+            type: Array,
+            required: true
+          },
+          isOrdered: Boolean
+        }
+      });
+
+        var vm = new Vue({
+          el: '#demo9',
+          data: {
+            items: [
+              {name: 'John'},
+              {name: 'Henry'}
+            ]
+          }
+        })
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>slots() vs children</h3>
+
+    <p>Consider the following:</p>
+
+    <pre><code class="language-javascript">
+      &lt;div&gt;<br />
+        &lt;my-functional-component&gt;<br />
+          &lt;p slot="foo"&gt;<br />
+            first<br />
+          &lt;/p&gt;<br />
+          &lt;p&gt;second&lt;/p&gt;<br />
+        &lt;/my-functional-component&gt;<br />
+      &lt;/div&gt;
+    </code></pre>
+
+    <p>In the above example, <b>children</b> will give you both paragraphs, <b>slots().default</b> will give you only the second, and <b>slots()</b> will give you only the first.</p>
+
+    <p>Having both <b>slots</b> and <b>children</b> allows us to choose whether this component knows about a slot system or perhaps delegates that responsibility to another component by simply passing along children.</p>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

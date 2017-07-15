@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Unit Testing</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Unit Testing</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Setup and Tooling</h3>
+
+    <p>According to Vue's <a href="https://vuejs.org/v2/guide/unit-testing.html">guide</a>, anything compatible with a module-based build system will work. The <a href="http://karma-runner.github.io/1.0/index.html">Karma</a> test runner has a lot of community plugins, including support for Webpack and Browserify. For a detailed setup, refer to the respective documentation. Below are some example Karma configurations:</p>
+
+    <h3>Simple Assertions</h3>
+
+    <p>We don't have to restructure our code to make them testable...just export the raw options:</p>
+
+    <pre><code class="language-javascript">
+      // MyComponent<br />
+      <br />
+      &lt;template&gt;<br />
+        &lt;span&gt;{{ message }}&lt;/span&gt;<br />
+      &lt;/template&gt;<br />
+        <br />
+      &lt;script&gt;<br />
+        export default {<br />
+          data() {<br />
+            return {<br />
+              message: 'Hello there!'<br />
+            }<br />
+          },<br />
+          created() {<br />
+            this.message = 'Bye bye!'<br />
+          }<br />
+        }<br />
+      &lt;/script&gt;
+    </code></pre>
+
+    <p>To test the component above, all we have to do is import the object along with Vue to make many common assertions:</p>
+
+    <pre><code class="language-javascript">
+      // Import Vue and the component being tested
+      import Vue from 'vue'
+      import MyComponent from 'path/to/myComponent.vue'
+
+      // Following are some Jasamine 2.0 tests, though you can use
+      // any test-runner / assertion library combo you perfer
+      describe('MyComponent', () => {
+
+        // Inspect raw component options
+        it('has a created hook', () => {
+          expect(typeof MyComponent.created).toBe('function')
+        })
+
+        // Evaluate the results of functions in
+        // the raw component options
+        it('sets the correct default data', () => {
+          expect(typeof MyComponent.data).toBe('function')
+          const defaultData = MyComponent.data()
+            expect(defaultData.message).toBe('Hello there!')
+        })
+
+        // Inspect the component instance on mount
+        it('correctly sets the message when created', () => {
+          const vm = new Vue(MyComponent).$mount()
+          expect(vm.message).toBe('Bye bye!')
+        })
+
+        // Mount the instance and inspect the render output
+        it('renders the correct message', () => {
+          const Ctor = Vue.extend(MyComponent)
+          const vm = new Ctor().$mount()
+          expect(vm.$el.textContent).toBe('bye')
+        })
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Writing Testable Components</h3>
+
+    <p>Many component's render output are primarily determined by the props they receive. If a component's render output solely depends on its props, it becomes quite straightforward to test:</p>
+
+    <pre><code class="language-javascript">
+      &lt;template&gt;<br />
+        &lt;p&gt;{{ msg }}&lt;/p&gt;<br />
+      &lt;/template&gt;<br />
+        <br />
+      &lt;script&gt;<br />
+        export default {<br />
+          props: ['msg']<br />
+        }<br />
+      &lt;/script&gt;
+    </code></pre>
+
+    <p>We can assert its redner output with different props using the <span class="highlight">propsData</span> option:</p>
+
+    <pre><code class="language-javascript">
+      import Vue from 'vue'
+      import MyComponent from './MyComponent.vue'
+
+      // helper function to mount and return the rendered text
+      function getRenderedText (Component, propsData) {
+        const Ctor = Vue.extend(Component)
+        const vm = new Ctor({ propsData: propsData }).$mount()
+        return vm.$el.textContent
+      }
+
+      describe('MyComponent', () => {
+        it('renders correctly with different props', () => {
+          expect(getRenderedText(MyComponent, {
+            msg: 'Hello there!'
+          })).toBe('Hello there')
+
+          expect(getRenderedText(MyComponent, {
+            msg: 'Bye bye!'
+          })).toBe('Bye bye!')
+        })
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Asynchronous Updates</h3>
+
+    <p>Vue performes DOM updates asynchronously, so any assertions on DOM updates resulting from state chage will have to be made in a <b>Vue.nextTick</b> callback:</p>
+
+    <pre><code class="language-javascript">
+      // Inspect the generated HTML after a state update
+      it('updates the rendered message when vm.message updates', done => {
+        vm.message = 'foo'
+
+        // wait a 'tick' after state change before asserting DOM updates
+        Vue.nextTick(() => {
+          expect(vm.$el.textContent).toBe('foo')
+          done()
+        })
+      })
+    </code></pre>
+
+    <p><b>The Vue Team is planning work on a collection of common test helpers that make it simpler to render components with different constraints and assert their output.</b></p>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

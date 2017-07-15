@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Server Side Rendering</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Server Side Rendering</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>What is Server Side Rendering</h3>
+
+    <p><q>Vuejs is a framework for building client-side applications. By default, Vue components produce and manipulate DOM in the browser as output. However, it is also possible to render the same components into HTML strings on the server, send them directly to the browser, and finally 'hydrate' the static markup into a fully interactive app on the client.</q></p>
+
+    <p><q>A server-rendered Vue.js app can also be considered 'isomorphic' or 'universal', in the sense that the majority of your app's code runs on <b>both</b> the server and the client.</q></p>
+
+    <h3>Benefits of SSR</h3>
+
+    <p>Server side rendering provides some benefits including:</p>
+
+    <ul>
+      <li>Better SEO</li>
+      <li>Faster time-to-content</li>
+    </ul>
+
+    <h3>Drawbacks of SSR</h3>
+
+    <p>There are also some trade-offs:</p>
+
+    <ul>
+      <li>Development costraints</li>
+      <li>More involved build setup and deployment requirements</li>
+      <li>More server-side load</li>
+    </ul>
+
+    <p>Before using SSR for you app you should ask whether or not you really need it, the deciding factor usually being the need for time-to-content performance gains. If time-to-content is critical, SSR can help achieve the best possible initial load performance.</p>
+
+    <p>For more information on SSR check out Vue's official <a href="https://ssr.vuejs.org/en/">SSR Guide</a>.</p>
+
+    <h3>Nuxt.js</h3>
+
+    <p>To help simplify the task of properly configuring a production-ready server-rendered app, the Vuejs guide recommends <a href="https://nuxtjs.org/">Nuxt.js</a>, a higher-level framework that is built on top of the Vue ecosystem.</p>
+
+    <p>Nuxt.js provies a streamlined development experience for writing universal Vue applications and can also be used as a static site generator with pages authored as single file components.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

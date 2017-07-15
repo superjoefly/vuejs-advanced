@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Reactivity</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Reactivity</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Change Detection</h3>
+
+    <p>Vue cannot detect property addition or deletion. A property must be present in the <b>data</b> object in order for Vue to convert it and make it reactive.</p>
+
+    <div id="example1">
+      <p>Result of a: {{ a }}</p>
+      <!-- <p>Result of b: {{ b }}</p> -->
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example1',
+      data: {
+        a: 1   // vm.a is reactive
+      }
+    })
+    console.log(vm.a);
+
+    vm.b = 2;  // vm.b is NOT reactive
+    console.log(vm.b);
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="example1"&gt;<br />
+        &lt;p&gt;Result of a: {{ a }}&lt;/p&gt;<br />
+        &lt;!-- &lt;p&gt;Result of b: {{ b }}&lt;/p&gt; --&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------
+
+      var vm = new Vue({
+        el: '#example1',
+        data: {
+          a: 1   // vm.a is reactive
+        }
+      })
+      console.log(vm.a);
+
+      vm.b = 2;  // vm.b is NOT reactive
+      console.log(vm.b);
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Adding Reactive Properties</h3>
+
+    <p>It is possible to add reactive properties to a nested object using the <b>Vue.set(object, key, value)</b> method.</p>
+
+    <p>We can also use the <b>vm.$set</b> instance method which is just an alias for the global <b>Vue.set</b>:</p>
+
+    <div id="example2">
+      <p>Result of c: {{ someObject.c }}</p>
+      <p>Result of d: {{ someObject.d }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example2',
+      data: {
+        someObject: {
+          a: 1,
+          b: 2
+        }
+      }
+    });
+
+    // Add property to existing nested object
+    Vue.set(vm.someObject, 'c', 3);
+    console.log(vm.someObject.c);
+
+    // Using vm.$set
+    vm.$set(vm.someObject, 'd', 4);
+    console.log(vm.someObject.d);
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="example2"&gt;<br />
+        &lt;p&gt;Result of c: {{ someObject.c }}&lt;/p&gt;<br />
+        &lt;p&gt;Result of d: {{ someObject.d }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      -----------------------------
+
+      var vm = new Vue({
+        el: '#example2',
+        data: {
+          someObject: {
+            a: 1,
+            b: 2
+          }
+        }
+      });
+
+      // Add property to existing nested object
+      Vue.set(vm.someObject, 'c', 3);
+      console.log(vm.someObject.c);
+
+      // Using vm.$set
+      vm.$set(vm.someObject, 'd', 4);
+      console.log(vm.someObject.d);
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+    <h3>Assigning Multiple Properties</h3>
+
+    <p>To assign a number of properties to an existing object, create a fresh object with properties from both the original object and th mixin object:</p>
+
+    <div id="example3">
+      <p>Result of a: {{ someObject.a }}</p>
+      <p>Result of b: {{ someObject.b }}</p>
+      <p>Result of c: {{ someObject.c }}</p>
+      <p>Result of d: {{ someObject.d }}</p>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example3',
+      data: {
+        someObject: {
+          a: 1,
+          b: 2
+        }
+      }
+    });
+
+    vm.someObject = Object.assign({}, vm.someObject, { c: 3, d: 4});
+    console.log(vm.someObject.c);
+    console.log(vm.someObject.d);
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+
+      &lt;div id="example3"&gt;<br />
+        &lt;p&gt;Result of a: {{ someObject.a }}&lt;/p&gt;<br />
+        &lt;p&gt;Result of b: {{ someObject.b }}&lt;/p&gt;<br />
+        &lt;p&gt;Result of c: {{ someObject.c }}&lt;/p&gt;<br />
+        &lt;p&gt;Result of d: {{ someObject.d }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ---------------------------------
+
+      var vm = new Vue({
+        el: '#example3',
+        data: {
+          someObject: {
+            a: 1,
+            b: 2
+          }
+        }
+      });
+
+      vm.someObject = Object.assign({}, vm.someObject, { c: 3, d: 4});
+      console.log(vm.someObject.c);
+      console.log(vm.someObject.d);
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Declaring Reactive Properties</h3>
+
+    <p>Vuejs doesn't allow adding root-level reactive properties, so we have to initialize instances by declaring all root-level reactive data properties up front:</p>
+
+    <div id="example4"></div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example4',
+      data: {
+        message: '' // must be declared
+      },
+      template: `<div>{{ message }}</div>`
+    });
+
+    vm.message = 'Hello Vue!'; // => Hello Vue!
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="example4"&gt;&lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#example4',
+        data: {
+          message: '' // must be declared
+        },
+        template: `&lt;div&gt;{{ message }}&lt;/div&gt;`
+      });
+
+      vm.message = 'Hello Vue!'; // => Hello Vue!
+    </code></pre>
+
+    <p>If you don't declare <b>message</b> in the data option, Vue will give you a warning.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Async Update Que</h3>
+
+    <h4><b>Vue.nextTick(callback)</b></h4>
+
+    <p>Whenever a data change is observed, Vue will open a queue and buffer all the data changes that happen in the same event loop. If the same watcher is triggered multiple times, it will be pushed into the queue only once. In the next event loop "tick", Vue flushes the queue and performs the actual work:</p>
+
+    <div id="example5">
+      {{ message }}
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#example5',
+      data: {
+        message: 'abc'
+      }
+    })
+    vm.message = 'new message'; // change data
+    console.log(vm.message);
+
+    console.log(vm.$el.textContent === 'new message'); // false
+
+    Vue.nextTick(function() {
+      vm.$el.textContent === 'new message'
+      console.log(vm.$el.textContent === 'new message'); // true
+    });
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="example5"&gt;<br />
+        {{ message }}<br />
+      &lt;/div&gt;
+
+      ---------------------------------
+
+      var vm = new Vue({
+        el: '#example5',
+        data: {
+          message: 'abc'
+        }
+      })
+      vm.message = 'new message'; // change data
+      console.log(vm.message);
+
+      console.log(vm.$el.textContent === 'new message'); // false
+
+      Vue.nextTick(function() {
+        vm.$el.textContent === 'new message'
+        console.log(vm.$el.textContent === 'new message'); // true
+      });
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+    <h4><b>vm.$nextTick()</b></h4>
+
+    <p>Another instance method, <b>vm.$nextTick()</b>, is especially handy inside components because it doesn't need global Vue, and its callback's <b>this</b> context is automatically bound to the current Vue instance:</p>
+
+    <div id="example6">
+      <my-component></my-component>
+    </div>
+
+    <script>
+      Vue.component('my-component', {
+        template: `
+          <div>
+            <button @click="updateMessage">Update</button>
+            <br />
+            <span>{{ componentMessage }}</span>
+          </div>
+        `,
+        data() {
+          return {
+            componentMessage: 'not updated!'
+          }
+        },
+        methods: {
+          updateMessage() {
+            this.componentMessage = 'updated!';
+            console.log(this.$el.textContent); // 'not updated'
+
+            this.$nextTick(function() {
+              console.log(this.$el.textContent) // 'updated'
+            })
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#example6'
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+
+      &lt;div id="example6"&gt;<br />
+        &lt;my-component&gt;&lt;/my-component&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.component('my-component', {
+        template: `
+        &lt;div&gt;<br />
+          &lt;button @click="updateMessage"&gt;Update&lt;/button&gt;<br />
+          &lt;br /&gt;<br />
+          &lt;span&gt;{{ componentMessage }}&lt;/span&gt;<br />
+        &lt;/div&gt;
+        `,
+        data() {
+          return {
+            componentMessage: 'not updated!'
+          }
+        },
+        methods: {
+          updateMessage() {
+            this.componentMessage = 'updated!';
+            console.log(this.$el.textContent); // 'not updated'
+
+            this.$nextTick(function() {
+              console.log(this.$el.textContent) // 'updated'
+            })
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#example6'
+      })
+    </code></pre>
+
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

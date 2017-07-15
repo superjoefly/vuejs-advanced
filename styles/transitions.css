@@ -1,0 +1,140 @@
+/*Demo1: Fade*/
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+
+/*Demo 2: Slide Fade*/
+
+
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .5s ease;
+}
+
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(15px);
+  opacity: 0;
+}
+
+
+/*Demo3: Swing Out*/
+
+/*Leave Phase*/
+.swing-leave-active {
+  animation: swing-out 1s;
+}
+
+/*Enter Phase*/
+.swing-enter-active {
+  animation: swing-out 1s reverse;
+}
+
+@keyframes swing-out {
+  0% {
+    transform: scale(1) translateX(0px) rotateZ(0);
+  }
+
+  50% {
+    transform: scale(1.5) translateX(500px) rotateZ(20deg);
+  }
+
+  100% {
+    transform: scale(0) translateX(250px) rotateZ(50deg);
+  }
+}
+
+
+/*Demo5: Fade Down*/
+
+#demo5 p {
+  display: inline-block;
+  font-size: 16px;
+  transition: all 1s ease;
+}
+
+#demo5 p:hover {
+  font-size: 22px;
+}
+
+.fade-down-leave-active {
+  animation: fade-down 1s;
+}
+
+.fade-down-enter-active {
+  animation: fade-down 1s reverse;
+}
+
+@keyframes fade-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+}
+
+/*Demo9: Fade*/
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+
+
+/*Demo11: list*/
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+
+.list-enter, .list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+
+
+
+
+/*Demo12: Flip-List*/
+
+.flip-list-move {
+  transition: transform 1s;
+}
+
+
+
+
+
+/*Demo13: Flip-Shuffle*/
+
+.flip-shuffle-item {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.flip-shuffle-enter, .flip-shuffle-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.flip-shuffle-leave-active {
+  position: absolute;
+}

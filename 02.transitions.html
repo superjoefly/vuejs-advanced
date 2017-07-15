@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Transitions</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Styles for Transitions -->
+    <link rel="stylesheet" href="styles/transitions.css" />
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
+
+    <!-- Velocity.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.ui.min.js"></script>
+
+    <!-- Lodash.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Transitions</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Overview</h3>
+
+    <p>Vuejs is capable of applying transition effects when items are inserted, updated or removed from the DOM. Examples include:</p>
+
+    <ul>
+      <li>automatically apply classes</li>
+      <li>use 3rd party CSS animation libraries</li>
+      <li>use JavaScript to manipulate the DOM</li>
+      <li>integrate 3rd party JavaScript animation libraries</li>
+    </ul>
+
+
+
+
+
+
+    <h3>Transitioning Single Elements/Components</h3>
+
+    <p>A <b>transition</b> wrapper component will allow us to apply entering/leaving transitions to any element or component using the following contexts:</p>
+
+    <ul>
+      <li>conditional rendering using <b>v-if</b></li>
+      <li>conditional display using <b>v-show</b></li>
+      <li>dynamic components</li>
+      <li>component root nodes</li>
+    </ul>
+
+    <div id="demo1">
+      <button @click="show = !show">Toggle</button>
+      <transition name="fade">
+        <p v-if="show">Hello There!</p>
+      </transition>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#demo1',
+      data: {
+        show: true
+      }
+    })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;button @click="show = !show"&gt;Toggle&lt;/button&gt;<br />
+        &lt;transition name="fade"&gt;<br />
+          &lt;p v-if="show"&gt;Hello There!&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo1',
+        data: {
+          show: true
+        }
+      })
+
+      -------------------------------
+
+      .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+      }
+
+      .fade-enter, .fade-leave-to {
+        opacity: 0;
+      }
+
+    </code></pre>
+
+    <p>When elements wrapped in a <b>transition</b> component are inserted or removed, the following process occurs:</p>
+
+    <ol>
+      <li>If the target element has CSS transitions or animations applied, the transition classes will be appropriately added or removed.</li>
+      <li>If the transition component has any JavaScript hooks, they will be called.</li>
+      <li>If there are no CSS transitions/animations, and no JavaScript hooks are applied, the DOM operation for insertion and/or removal will be executed immediately on the next frame.</li>
+    </ol>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Transition Classes</h3>
+
+    <p>The classes applied for enter/leave transitions are as follows:</p>
+
+    <ol>
+      <li><b>v-enter:</b> starting state; added before element is inserted; removed one frame after element is inserted.</li>
+      <li><b>v-enter-active:</b> active state for enter; applied during the entire entering phase; added before element is inserted; removed when transition/animation finishes.</li>
+      <li><b>v-enter-to:</b> ending state for enter; added one frame after element is inserted; removed when transition/animation finishes.</li>
+      <li><b>v-leave:</b> starting state for leave; added immediately when leaving transition is triggered; removed after one frame.</li>
+      <li><b>v-leave-active:</b> active state for leave; applied during the entire leaving phase; added immediately when transition is triggered; removed when transition/animation finishes.</li>
+      <li><b>v-leave-to:</b> ending state for leave; added one frame after a leaving transition is triggered; removed when transition/animation finishes.</li>
+    </ol>
+
+    <p>Each of these classes will be prefixed with the name of the transition. The <b>v-</b> prefix is default when a name is not provided.</p>
+
+    <hr />
+
+
+
+
+    <h3>CSS Transitions</h3>
+
+    <p>Following is an example fo using CSS transitions:</p>
+
+    <div id="demo2">
+      <button @click="show = !show">Toggle Slide Fade</button>
+      <transition name="slide-fade">
+        <p v-if="show">What's Up?</p>
+      </transition>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#demo2',
+      data: {
+        show: true
+      }
+    })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo2"&gt;<br />
+        &lt;button @click="show = !show"&gt;Toggle Slide Fade&lt;/button&gt;<br />
+        &lt;transition name="slide-fade"&gt;<br />
+          &lt;p v-if="show"&gt;What's Up?&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo2',
+        data: {
+          show: true
+        }
+      })
+
+      -------------------------------
+
+      .slide-fade-enter-active, .slide-fade-leave-active {
+        transition: all .5s ease;
+      }
+
+      .slide-fade-enter, .slide-fade-leave-to {
+        transform: translateX(15px);
+        opacity: 0;
+      }
+
+    </code></pre>
+
+
+    <p>Any valid CSS transition timing function can be used to define speed curves.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>CSS Animations</h3>
+
+    <p>CSS animations are similar to CSS transitions. The only difference is that <b>v-enter</b> is not removed immediatly after the element is inserted, but on an <b>animationend</b> event:</p>
+
+    <div id="demo3">
+      <div>
+        <button @click="show = !show">Swing!</button>
+        <transition name="swing">
+          <p v-if="show">Goodbye!!!</p>
+        </transition>
+      </div>
+    </div>
+
+    <script>
+    var vm = new Vue({
+      el: '#demo3',
+      data: {
+        show: true
+      }
+    })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo3"&gt;<br />
+        &lt;div&gt;<br />
+          &lt;button @click="show = !show"&gt;Swing!&lt;/button&gt;<br />
+          &lt;transition name="swing"&gt;<br />
+            &lt;p v-if="show"&gt;Goodbye!!!&lt;/p&gt;<br />
+          &lt;/transition&gt;<br />
+        &lt;/div&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo3',
+        data: {
+          show: true
+        }
+      })
+
+      --------------------------------
+
+      /*Leave Phase*/
+      .swing-leave-active {
+        animation: swing-out 1s;
+      }
+
+      /*Enter Phase*/
+      .swing-enter-active {
+        animation: swing-out 1s reverse;
+      }
+
+      @keyframes swing-out {
+        0% {
+          transform: scale(1) translateX(0px) rotateZ(0);
+        }
+
+        50% {
+          transform: scale(1.5) translateX(500px) rotateZ(20deg);
+        }
+
+        100% {
+          transform: scale(0) translateX(250px) rotateZ(50deg);
+        }
+      }
+
+    </code></pre>
+
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Custom Transition Classes</h3>
+
+    <p>We can specify custom transition classes by providing the following attributes:</p>
+
+    <ul>
+      <li><b>enter-class</b></li>
+      <li><b>enter-active-class</b></li>
+      <li><b>enter-to-class</b></li>
+      <li><b>leave-class</b></li>
+      <li><b>leave-active-class</b></li>
+      <li><b>leave-to-class</b></li>
+    </ul>
+
+    <p>These attributes will override the conventional class names. This is especially useful when combining Vue's transition system with existing CSS animation libraries:</p>
+
+    <div id="demo4">
+      <button @click="show = !show">Animate!</button>
+      <transition
+        name="my-transition"
+        enter-active-class="animated bounceInRight"
+        leave-active-class="animated rotateOut"
+        >
+        <p v-if="show">I'm animated!</p>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          show: true
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo4"&gt;<br />
+        &lt;button @click="show = !show"&gt;Animate!&lt;/button&gt;<br />
+        &lt;transition<br />
+          name="my-transition"<br />
+          enter-active-class="animated bounceInRight"<br />
+          leave-active-class="animated rotateOut"<br />
+          &gt;<br />
+          &lt;p v-if="show"&gt;I'm animated!&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          show: true
+        }
+      })
+
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+    <h3>Using Transitions with Animations</h3>
+
+    <p>In the case that we want to have both <b>transitions</b> and <b>animations</b> on the same element, we will have to explicitly declare the type we want Vue to respond to using a <b>type</b> attribute, with a value of either <b>animation</b> or <b>transition</b>:</p>
+
+    <div id="demo5">
+      <button @click="show = !show" style="display: block;">Animate!</button>
+      <transition name="fade-down" type="animation">
+        <p v-if="show">Hover over Me!</p>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo5',
+        data: {
+          show: true
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo5"&gt;<br />
+        &lt;button @click="show = !show" style="display: block;"&gt;Animate!&lt;/button&gt;<br />
+        &lt;transition name="fade-down" type="animation"&gt;<br />
+          &lt;p v-if="show"&gt;Hover over Me!&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo5',
+        data: {
+          show: true
+        }
+      })
+
+      -------------------------------
+
+      #demo5 p {
+        display: inline-block;
+        font-size: 16px;
+        transition: all 1s ease;
+      }
+
+      #demo5 p:hover {
+        font-size: 22px;
+      }
+
+      .fade-down-leave-active {
+        animation: fade-down 1s;
+      }
+
+      .fade-down-enter-active {
+        animation: fade-down 1s reverse;
+      }
+
+      @keyframes fade-down {
+        from {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+      }
+
+    </code></pre>
+
+    <p>In the example above, the transition component is given a type of <b>animation</b>.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Transition Durations</h3>
+
+    <p>In most cases, Vue automatically figures out when a transition has finished. This may not always be desired. To specify an explicit transition duration (in milliseconds), we can use the <b>duration</b> prop on the <b>transition</b> component.</p>
+
+    <p><b>From the guide:</b></p>
+
+    <p><b style="color: orange">transition :duration="1000"</b></p>
+
+    <p>We can also specify separate values for enter and leave durations:</p>
+
+    <p><b style="color: orange">transition :duration="{ enter: 500, leave: 800 }"</b></p>
+
+    <hr />
+
+
+
+
+    <h3>JavaScript Hooks</h3>
+
+    <p>We can also define JavaScript hooks in attributes:</p>
+
+    <div id="demo6">
+      <button @click="show = !show">Animate!</button>
+      <transition
+        @before-enter = 'beforeEnter'
+        @enter = 'enter'
+        @after-enter = 'afterEnter'
+        @enter-cancelled = 'enterCancelled'
+
+        @before-leave = 'beforeLeave'
+        @leave = 'leave'
+        @after-leave = 'afterLeave'
+        @leave-cancelled = 'leaveCancelled'
+        :css = 'false'
+      >
+        <p v-if="show">I'm animated!</p>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo6',
+        data: {
+          show: false,
+          fontSize: 0,
+          color: 'red'
+        },
+        methods: {
+          // JavaScript Hooks
+          beforeEnter(el) {
+            console.log('beforeEnter!')
+            el.style.color = this.color;
+            this.fontSize = 0;
+            el.style.fontSize = this.fontSize + 'px';
+          },
+          enter(el, done) {
+            console.log('enter!')
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize + size) + 'px';
+              size++;
+              if (size > 30) {
+                clearInterval(interval);
+                done();
+              }
+            }, 30)
+          },
+          afterEnter(el) {
+            console.log('afterEnter!')
+            el.style.color="green"
+          },
+          enterCancelled(el) {
+            console.log('enterCancelled!')
+          },
+          beforeLeave(el) {
+            console.log('beforeLeave!')
+            el.style.color="yellow";
+            this.fontSize = 30;
+            el.style.fontSize = this.fontSize + 'px'
+          },
+          leave(el, done) {
+            console.log('leave!')
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize - size) + 'px';
+              size++;
+              if (size > 30) {
+                clearInterval(interval);
+                done();
+              }
+            }, 30)
+          },
+          afterLeave(el) {
+            console.log('afterLeave!')
+            el.style.fontSize = this.fontSize;
+          },
+          leaveCancelled(el) {
+            console.log('leaveCancelled!')
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo6"&gt;<br />
+        &lt;button @click="show = !show"&gt;Animate!&lt;/button&gt;<br />
+        &lt;transition<br />
+          @before-enter = 'beforeEnter'<br />
+          @enter = 'enter'<br />
+          @after-enter = 'afterEnter'<br />
+          @enter-cancelled = 'enterCancelled'<br />
+  <br />
+          @before-leave = 'beforeLeave'<br />
+          @leave = 'leave'<br />
+          @after-leave = 'afterLeave'<br />
+          @leave-cancelled = 'leaveCancelled'<br />
+          :css = 'false'<br />
+        &gt;<br />
+          &lt;p v-if="show"&gt;I'm animated!&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo6',
+        data: {
+          show: false,
+          fontSize: 0,
+          color: 'red'
+        },
+        methods: {
+          // JavaScript Hooks
+          beforeEnter(el) {
+            console.log('beforeEnter!')
+            el.style.color = this.color;
+            this.fontSize = 0;
+            el.style.fontSize = this.fontSize + 'px';
+          },
+          enter(el, done) {
+            console.log('enter!')
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize + size) + 'px';
+              size++;
+              if (size > 30) {
+                clearInterval(interval);
+                done();
+              }
+            }, 30)
+          },
+          afterEnter(el) {
+            console.log('afterEnter!')
+            el.style.color="green"
+          },
+          enterCancelled(el) {
+            console.log('enterCancelled!')
+          },
+          beforeLeave(el) {
+            console.log('beforeLeave!')
+            el.style.color="yellow";
+            this.fontSize = 30;
+            el.style.fontSize = this.fontSize + 'px'
+          },
+          leave(el, done) {
+            console.log('leave!')
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize - size) + 'px';
+              size++;
+              if (size > 30) {
+                clearInterval(interval);
+                done();
+              }
+            }, 30)
+          },
+          afterLeave(el) {
+            console.log('afterLeave!')
+            el.style.fontSize = this.fontSize;
+          },
+          leaveCancelled(el) {
+            console.log('leaveCancelled!')
+          }
+        }
+      })
+
+    </code></pre>
+
+    <p><b>Note:</b> when using JavaScript only transitions, the <b>done</b> callbacks are required for the <b>enter</b> and <b>leave</b> hooks. Otherwise they will be called synchronously and the transition will finish immediately.</p>
+
+    <p><b>Note:</b> it is also a good idea to explicitly add <b>v-bind:css="false"</b> so that Vue can skip the CSS detection process. This will help to prevent accidental interference of CSS rules with the transition.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+    <h3>Velocity.js JavaScript Transition</h3>
+
+    <p>Following is an example of using Velocity.js along with the Velocity UI:</p>
+
+    <div id="demo7" style="margin-bottom: 100px;">
+      <button @click="show = !show">Animate!</button>
+      <transition-group
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @leave="leave"
+        :css="false"
+      >
+        <p v-if="show" data-index="1" key="par">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.</p>
+
+        <p v-if="show" data-index="2" key="par">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.</p>
+      </transition-group>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo7',
+        data: {
+          show: false
+        },
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity = 0;
+          },
+          enter(el, done) {
+            var delay = el.dataset.index * 100;
+            setTimeout(function() {
+            Velocity(el, 'transition.bounceIn');
+          }, delay)
+
+          },
+          leave(el, done) {
+            var delay = el.dataset.index * 100;
+            setTimeout(function() {
+            Velocity(el, 'transition.flipBounceXOut');
+          }, delay)
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo7" style="margin-bottom: 100px;"&gt;<br />
+        &lt;button @click="show = !show"&gt;Animate!&lt;/button&gt;<br />
+        &lt;transition-group<br />
+          @before-enter="beforeEnter"<br />
+          @enter="enter"<br />
+          @leave="leave"<br />
+          :css="false"<br />
+        &gt;<br />
+          &lt;p v-if="show" data-index="1" key="par"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &lt;strong&gt;Pellentesque risus mi&lt;/strong&gt;, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum &lt;a&gt;felis venenatis&lt;/a&gt; efficitur. Aenean ac &lt;em&gt;eleifend lacus&lt;/em&gt;, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.&lt;/p&gt;<br />
+  <br />
+          &lt;p v-if="show" data-index="2" key="par"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &lt;strong&gt;Pellentesque risus mi&lt;/strong&gt;, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum &lt;a&gt;felis venenatis&lt;/a&gt; efficitur. Aenean ac &lt;em&gt;eleifend lacus&lt;/em&gt;, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.&lt;/p&gt;<br />
+        &lt;/transition-group&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo7',
+        data: {
+          show: false
+        },
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity = 0;
+          },
+          enter(el, done) {
+            var delay = el.dataset.index * 100;
+            setTimeout(function() {
+            Velocity(el, 'transition.bounceIn');
+          }, delay)
+
+          },
+          leave(el, done) {
+            var delay = el.dataset.index * 100;
+            setTimeout(function() {
+            Velocity(el, 'transition.flipBounceXOut');
+          }, delay)
+          }
+        }
+      })
+    </code></pre>
+
+    <p><b>Note:</b> the example above uses a <b>transition-group</b> component. The child elements must have a <b>key</b> attribute and each element uses <b>v-if</b> for display. Also, <b>el.dataset.index</b> is referring to each element's <b>data-index</b> attribute to set the duration of the delay.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+    <h3>Transition on Initial Render</h3>
+
+    <p>We can use the <b>appear</b> attribute to apply a transition on initial render of a node. By default this will use the transitions specified for entering and leaving, however we can also speicify custom CSS classes and custom JavaScript hooks:</p>
+
+    <div id="demo8">
+      <transition
+        appear
+        @before-appear="beforeAppear"
+        @appear="appear"
+        @after-appear="afterAppear"
+        @after-appear-cancelled="appearCancelled"
+      >
+        <p>This paragraph will transition (appear) when the page is loaded!</p>
+      </transition>
+    </div>
+
+
+    <script>
+      var vm = new Vue({
+        el: '#demo8',
+        data: {
+          fontSize: 0
+        },
+        methods: {
+          beforeAppear(el) {
+            el.style.fontSize = this.fontSize + 'px';
+            el.style.color = 'blue';
+          },
+          appear(el, done) {
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize + size) + 'px';
+              size++;
+              if (size > 22) {
+                clearInterval(interval);
+                done();
+              }
+            }, 100)
+          },
+          afterAppear(el) {
+            el.style.fontSize = '22px';
+            el.style.color = 'red';
+          },
+          appearCancelled(el) {
+            console.log('Cancelled!');
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo8"&gt;<br />
+        &lt;transition<br />
+          appear<br />
+          @before-appear="beforeAppear"<br />
+          @appear="appear"<br />
+          @after-appear="afterAppear"<br />
+          @after-appear-cancelled="appearCancelled"<br />
+        &gt;<br />
+          &lt;p&gt;This paragraph will transition (appear) when the page is loaded!&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo8',
+        data: {
+          fontSize: 0
+        },
+        methods: {
+          beforeAppear(el) {
+            el.style.fontSize = this.fontSize + 'px';
+            el.style.color = 'blue';
+          },
+          appear(el, done) {
+            let size = 1;
+            const interval = setInterval(() => {
+              el.style.fontSize = (this.fontSize + size) + 'px';
+              size++;
+              if (size > 22) {
+                clearInterval(interval);
+                done();
+              }
+            }, 100)
+          },
+          afterAppear(el) {
+            el.style.fontSize = '22px';
+            el.style.color = 'red';
+          },
+          appearCancelled(el) {
+            console.log('Cancelled!');
+          }
+        }
+      })
+    </code></pre>
+
+
+    <p>The example above makes use of custom JavaScript Appear Hooks.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+    <h3>Transitioning Between Elements</h3>
+
+    <p>We can transition between elements using <b>v-if / v-on</b>. Type some text into the input field and press enter to see the effect:</p>
+
+    <div id="demo9">
+      <input type="text" v-model="item" @keyup.enter="addItem" />
+      <transition name="fade" mode="out-in">
+        <ul v-if="items.length > 0" style="list-style-type: none;">
+          <li v-for="item in items">
+            <span style="color: red; font-size: 20px; position: relative; top: 2.5px; cursor: pointer;" @click="removeItem">&times;</span>
+             {{ item }}
+          </li>
+        </ul>
+        <p v-else>No items found...</p>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo9',
+        data: {
+          items: [],
+          item: ''
+        },
+        methods: {
+          addItem() {
+            this.items.push(this.item);
+            this.item = '';
+          },
+          removeItem(index) {
+            this.items.pop(index);
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo9"&gt;<br />
+        &lt;input type="text" v-model="item" @keyup.enter="addItem" /&gt;<br />
+        &lt;transition name="fade" mode="out-in"&gt;<br />
+          &lt;ul v-if="items.length &gt; 0" style="list-style-type: none;"&gt;<br />
+            &lt;li v-for="item in items"&gt;<br />
+              &lt;span style="color: red; font-size: 20px; position: relative; top: 2.5px; cursor: pointer;" @click="removeItem"&gt;&amp;times;&lt;/span&gt;<br />
+               {{ item }}<br />
+            &lt;/li&gt;<br />
+          &lt;/ul&gt;<br />
+          &lt;p v-else&gt;No items found...&lt;/p&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo9',
+        data: {
+          items: [],
+          item: ''
+        },
+        methods: {
+          addItem() {
+            this.items.push(this.item);
+            this.item = '';
+          },
+          removeItem(index) {
+            this.items.pop(index);
+          }
+        }
+      })
+
+      --------------------------------
+
+      .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+      }
+
+      .fade-enter, .fade-leave-to {
+        opacity: 0;
+      }
+    </code></pre>
+
+    <p><b>Note:</b> when transitioning between elements that have the same tag name, you must tell Vue that they are distinct elements by giving them unique <b>key</b> attributes.</p>
+
+    <p><b>Note:</b> The default behavior of transitioning is for one element to transition out at the same time the other is transitioning in. This can lead to "jumping" around of the transitioned elements. In the example above, we use a <b>transition mode</b> of <b>out-in</b> so that the current element transitions out before the new element transitions in.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+    <h2>Transitioning Between Components</h2>
+
+    <p>To transition between components, we can wrap a <b>dynamic component</b> with the transition component:</p>
+
+    <div id="demo10">
+      <form style="margin: 10px;">
+        <input type="radio" v-model="view" value="comp1" />
+        <label>Comp1</label>
+        <input type="radio" v-model="view" value="comp2" />
+        <label>Comp2</label>
+      </form>
+      <transition name="fade" mode="out-in">
+        <component :is="view"></component>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo10',
+        data: {
+          view: 'comp1'
+        },
+        components: {
+          'comp1': {
+            template: `<div style="color: red;">Component One</div>`
+          },
+          'comp2': {
+            template: `<div style="color: blue;">Component Two</div>`
+          },
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo10"&gt;<br />
+        &lt;form style="margin: 10px;"&gt;<br />
+          &lt;input type="radio" v-model="view" value="comp1" /&gt;<br />
+          &lt;label&gt;Comp1&lt;/label&gt;<br />
+          &lt;input type="radio" v-model="view" value="comp2" /&gt;<br />
+          &lt;label&gt;Comp2&lt;/label&gt;<br />
+        &lt;/form&gt;<br />
+        &lt;transition name="fade" mode="out-in"&gt;<br />
+          &lt;component :is="view"&gt;&lt;/component&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo10',
+        data: {
+          view: 'comp1'
+        },
+        components: {
+          'comp1': {
+            template: `&lt;div style="color: red;"&gt;Component One&lt;/div&gt;`
+          },
+          'comp2': {
+            template: `&lt;div style="color: blue;"&gt;Component Two&lt;/div&gt;`
+          },
+        }
+      })
+
+    </code></pre>
+
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>List Transitions</h3>
+
+    <p>If we want to render items simultaneously, for example with <b>v-for</b>, we can use the <b>transition-group</b> component.</p>
+
+    <div id="demo11">
+      <button @click="add">Add</button>
+      <button @click="remove">Remove</button>
+      <transition-group name="list" tag="p">
+        <span v-for="item in items" :key="item" class="list-item">
+          {{ item }}
+        </span>
+      </transition-group>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo11',
+        data: {
+          items: [1, 2, 3, 4, 5],
+          nextNum: 6
+        },
+        methods: {
+          randomIndex() {
+            return Math.floor(Math.random() * this.items.length);
+          },
+          add() {
+            this.items.splice(this.randomIndex(), 0,  this.nextNum++);
+          },
+          remove() {
+            this.items.splice(this.randomIndex(), 1);
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo11"&gt;<br />
+        &lt;button @click="add"&gt;Add&lt;/button&gt;<br />
+        &lt;button @click="remove"&gt;Remove&lt;/button&gt;<br />
+        &lt;transition-group name="list" tag="p"&gt;<br />
+          &lt;span v-for="item in items" :key="item" class="list-item"&gt;<br />
+            {{ item }}<br />
+          &lt;/span&gt;<br />
+        &lt;/transition-group&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo11',
+        data: {
+          items: [1, 2, 3, 4, 5],
+          nextNum: 6
+        },
+        methods: {
+          randomIndex() {
+            return Math.floor(Math.random() * this.items.length);
+          },
+          add() {
+            this.items.splice(this.randomIndex(), 0,  this.nextNum++);
+          },
+          remove() {
+            this.items.splice(this.randomIndex(), 1);
+          }
+        }
+      })
+
+      --------------------------------
+
+      .list-item {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      .list-enter-active, .list-leave-active {
+        transition: all 1s;
+      }
+
+      .list-enter, .list-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+    </code></pre>
+
+    <p><b>Note:</b> using <b>transition-group</b> renders an actual element - <b>span</b>, by default. The can be changed by adding a <b>tag</b> attribute. Also important, elements inside are <b>required</b> to have a unique <b>key</b> attribute.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+    <h3>List Move Transitions</h3>
+
+    <p>The <b>transition-group</b> component is also capable of animating changes in position. The <b>v-move</b> class is added when items are changing positions. Like the other transition classes, its prefix will match the name attribute of the transition. We can also manually specify a class with the <b>move-class</b> attribute:</p>
+
+    <div id="demo12">
+      <button @click="shuffle">Shuffle</button>
+      <transition-group name="flip-list" tag="ul">
+        <li v-for="item in items" :key="item">
+          {{ item }}
+        </li>
+      </transition-group>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo12',
+        data: {
+          items: ['a', 'b', 'c', 'd', 'e']
+        },
+        methods: {
+          shuffle() {
+            this.items = _.shuffle(this.items);
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo12"&gt;<br />
+        &lt;button @click="shuffle"&gt;Shuffle&lt;/button&gt;<br />
+        &lt;transition-group name="flip-list" tag="ul"&gt;<br />
+          &lt;li v-for="item in items" :key="item"&gt;<br />
+            {{ item }}<br />
+          &lt;/li&gt;<br />
+        &lt;/transition-group&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo12',
+        data: {
+          items: ['a', 'b', 'c', 'd', 'e']
+        },
+        methods: {
+          shuffle() {
+            this.items = _.shuffle(this.items);
+          }
+        }
+      })
+
+      -------------------------------
+
+      .flip-list-move {
+        transition: transform 1s;
+      }
+    </code></pre>
+
+    <p>The example above use the <a href="https://lodash.com/docs/4.17.4#shuffle" style="color: orange; text-decoration: none;">Lodash</a> shuffle function, and <a href="https://aerotwist.com/blog/flip-your-animations/" style="color: orange; text-decoration: none;">FLIP</a> to transition the elements.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Combination of Above</h3>
+
+    <p>The following example combines the two example immediately above to animate all changes to a list:</p>
+
+    <div id="demo13">
+      <button @click="add">Add</button>
+      <button @click="remove">Remove</button>
+      <button @click="shuffle">Shuffle</button>
+      <transition-group name="flip-shuffle" tag="p">
+        <span v-for="item in items" :key="item" class="flip-shuffle-item">
+          {{ item }}
+        </span>
+      </transition-group>
+    </div>
+
+    <script>
+     var vm = new Vue({
+       el: '#demo13',
+       data: {
+         items: [1, 2, 3, 4, 5, 6, 7],
+         nextNum: 8
+       },
+       methods: {
+         randomIndex() {
+           return Math.floor(Math.random() * this.items.length);
+         },
+         add() {
+           this.items.splice(this.randomIndex(), 0, this.nextNum++);
+         },
+         remove() {
+           this.items.splice(this.randomIndex(), 1);
+         },
+         shuffle() {
+           this.items = _.shuffle(this.items);
+         }
+       }
+     })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo13"&gt;<br />
+        &lt;button @click="add"&gt;Add&lt;/button&gt;<br />
+        &lt;button @click="remove"&gt;Remove&lt;/button&gt;<br />
+        &lt;button @click="shuffle"&gt;Shuffle&lt;/button&gt;<br />
+        &lt;transition-group name="flip-shuffle" tag="p"&gt;<br />
+          &lt;span v-for="item in items" :key="item" class="flip-shuffle-item"&gt;<br />
+            {{ item }}<br />
+          &lt;/span&gt;<br />
+        &lt;/transition-group&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo13',
+        data: {
+          items: [1, 2, 3, 4, 5, 6, 7],
+          nextNum: 8
+        },
+        methods: {
+          randomIndex() {
+            return Math.floor(Math.random() * this.items.length);
+          },
+          add() {
+            this.items.splice(this.randomIndex(), 0, this.nextNum++);
+          },
+          remove() {
+            this.items.splice(this.randomIndex(), 1);
+          },
+          shuffle() {
+            this.items = _.shuffle(this.items);
+          }
+        }
+      })
+
+      -------------------------------
+
+      .flip-shuffle-item {
+        transition: all 1s;
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      .flip-shuffle-enter, .flip-shuffle-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      .flip-shuffle-leave-active {
+        position: absolute;
+      }
+
+    </code></pre>
+
+    <p>These <b>FLIP</b> transitions do not work with elements set to <b>display: inline</b>. Alternatively, we can use <b>display: inline-block</b> or place elements in a flex context.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Staggering List Transitions</h3>
+
+    <p>We can communicate with JavaScript transitions, using data attributes, to stagger transitions in a list.</p>
+
+    <div id="demo14">
+      <input type='text' v-model="query" />
+      <transition-group
+        name="stagger-fade"
+        tag="ul"
+        :css="false"
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @leave="leave"
+      >
+        <li
+          v-for="(item, index) in computedList"
+          :key="item.name"
+          :data-index="index"
+          style="list-style-type: none; cursor:pointer"
+          >
+          {{item.name}}
+        </li>
+      </transition-group>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo14',
+        data: {
+          query: '',
+          list: [
+            {name: 'John Doe'},
+            {name: 'Henry Clarkson'},
+            {name: 'Bill Jack'},
+            {name: 'Chris Brown'},
+            {name: 'Kevin James'}
+          ]
+        },
+        computed: {
+          computedList() {
+            var vm = this;
+            return this.list.filter(function(item) {
+              return item.name.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1
+            })
+          }
+        },
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity=0;
+          },
+          enter(el, done) {
+            var delay = el.dataset.index * 150;
+            setTimeout(function() {
+              Velocity(el, 'transition.fadeIn')
+            }, delay)
+          },
+          leave(el, done) {
+            var delay = el.dataset.index * 150;
+            setTimeout(function() {
+              Velocity(el, 'transition.fadeOut')
+            }, delay)
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo14"&gt;<br />
+        &lt;input type='text' v-model="query" /&gt;<br />
+        &lt;transition-group<br />
+          name="stagger-fade"<br />
+          tag="ul"<br />
+          :css="false"<br />
+          @before-enter="beforeEnter"<br />
+          @enter="enter"<br />
+          @leave="leave"<br />
+        &gt;<br />
+          &lt;li<br />
+            v-for="(item, index) in computedList"<br />
+            :key="item.name"<br />
+            :data-index="index"<br />
+            style="list-style-type: none; cursor:pointer"<br />
+            &gt;<br />
+            {{item.name}}<br />
+          &lt;/li&gt;<br />
+        &lt;/transition-group&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo14',
+        data: {
+          query: '',
+          list: [
+            {name: 'John Doe'},
+            {name: 'Henry Clarkson'},
+            {name: 'Bill Jack'},
+            {name: 'Chris Brown'},
+            {name: 'Kevin James'}
+          ]
+        },
+        computed: {
+          computedList() {
+            var vm = this;
+            return this.list.filter(function(item) {
+              return item.name.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1
+            })
+          }
+        },
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity=0;
+          },
+          enter(el, done) {
+            var delay = el.dataset.index * 150;
+            setTimeout(function() {
+              Velocity(el, 'transition.fadeIn')
+            }, delay)
+          },
+          leave(el, done) {
+            var delay = el.dataset.index * 150;
+            setTimeout(function() {
+              Velocity(el, 'transition.fadeOut')
+            }, delay)
+          }
+        }
+      })
+
+    </code></pre>
+
+    <p>In the example above, we use a stagger transition while filtering a list of names.</p>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Reusable Transitions</h3>
+
+    <p>Transitions can be reused throughout Vue's component system. To create a reusable transition, we can place a transition or transition-group component at the root, and pass any children into the transition component:</p>
+
+    <p>Click an item to remove it...</p>
+
+    <div id="demo15">
+      <my-transition>
+          <li
+            v-for="(item, index) in list"
+            :key="item"
+            @click="removeItem(index)"
+            style="cursor: pointer"
+          >{{item}}</li>
+      </my-transition>
+      <input type="text" v-model="newItem" @keyup.enter="addItem" />
+      <button @click="addItem">Add</button>
+    </div>
+
+    <script>
+      Vue.component('my-transition', {
+        template: `\
+          <transition-group\
+          appear\
+          mode="out-in"\
+          tag="ul"
+          :css="false"\
+          @beforeEnter="beforeEnter"\
+          @enter="enter"\
+          @leave="leave"\
+          >\
+          <slot></slot>\
+          </transition-group>\
+        `,
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity=0;
+          },
+          enter(el, done) {
+              Velocity(el, 'transition.bounceIn')
+          },
+          leave(el, done) {
+              Velocity(el, 'transition.bounceOut')
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo15',
+        data: {
+          newItem: '',
+          list: [
+            'item 1',
+            'item 2',
+            'item 3'
+          ]
+        },
+        methods: {
+          addItem() {
+            this.list.push(this.newItem);
+            this.newItem = '';
+          },
+          removeItem(index) {
+            this.list.splice(index, 1);
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo15"&gt;<br />
+        &lt;my-transition&gt;<br />
+            &lt;li<br />
+              v-for="(item, index) in list"<br />
+              :key="item"<br />
+              @click="removeItem(index)"<br />
+              style="cursor: pointer"<br />
+            &gt;{{item}}&lt;/li&gt;<br />
+        &lt;/my-transition&gt;<br />
+        &lt;input type="text" v-model="newItem" @keyup.enter="addItem" /&gt;<br />
+        &lt;button @click="addItem"&gt;Add&lt;/button&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.component('my-transition', {
+        template: `\
+          &lt;transition-group\<br />
+          appear\<br />
+          mode="out-in"\<br />
+          tag="ul"<br />
+          :css="false"\<br />
+          @beforeEnter="beforeEnter"\<br />
+          @enter="enter"\<br />
+          @leave="leave"\<br />
+          &gt;\<br />
+          &lt;slot&gt;&lt;/slot&gt;\<br />
+          &lt;/transition-group&gt;\
+        `,
+        methods: {
+          beforeEnter(el) {
+            el.style.opacity=0;
+          },
+          enter(el, done) {
+              Velocity(el, 'transition.bounceIn')
+          },
+          leave(el, done) {
+              Velocity(el, 'transition.bounceOut')
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo15',
+        data: {
+          newItem: '',
+          list: [
+            'item 1',
+            'item 2',
+            'item 3'
+          ]
+        },
+        methods: {
+          addItem() {
+            this.list.push(this.newItem);
+            this.newItem = '';
+          },
+          removeItem(index) {
+            this.list.splice(index, 1);
+          }
+        }
+      })
+    </code></pre>
+
+
+
+
+    <hr />
+
+    <p>Functional components are especially well-suited to this task:</p>
+
+    <div id="demo16">
+      <button @click="shown=!shown" style="margin: 5px;">Animate</button>
+      <functional-component>
+        <div
+          v-if="shown"
+          style="height: 100px; width: 100px; background-color: blue"></div>
+      </functional-component>
+    </div>
+
+    <script>
+      Vue.component('functional-component', {
+        functional: true,
+        render(createElement, context) {
+          var data = {
+            props: {
+              name: 'special-transition',
+              mode: 'out-in',
+              enterActiveClass: 'animated tada',
+              leaveActiveClass: 'animated swing'
+            }
+          }
+          return createElement('transition', data, context.children)
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo16',
+        data: {
+          shown: false
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo16"&gt;<br />
+        &lt;button @click="shown=!shown" style="margin: 5px;"&gt;Animate&lt;/button&gt;<br />
+        &lt;functional-component&gt;<br />
+          &lt;div<br />
+            v-if="shown"<br />
+            style="height: 100px; width: 100px; background-color: blue"&gt;&lt;/div&gt;<br />
+        &lt;/functional-component&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      Vue.component('functional-component', {
+        functional: true,
+        render(createElement, context) {
+          var data = {
+            props: {
+              name: 'special-transition',
+              mode: 'out-in',
+              enterActiveClass: 'animated tada',
+              leaveActiveClass: 'animated swing'
+            }
+          }
+          return createElement('transition', data, context.children)
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo16',
+        data: {
+          shown: false
+        }
+      })
+
+    </code></pre>
+
+    <hr />
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h3>Dynamic Transitions</h3>
+
+    <p>Any transition attribute can be dynamically bound. Additionally, since event hooks are methods, they have access to any data in the context. The allows us to control the behavior of our JavaScript transitions:</p>
+
+    <div id="demo17">
+      <div>
+        Faster
+        <input type="range" v-model="speed" :max="maxSpeed" :min="0" />
+        Slower
+      </div>
+      <br />
+      <button @click="start">Start!</button>
+      <button @click="stopIt">Stop</button>
+      <br /><br />
+      <transition
+        @before-enter="beforeEnter"
+        @enter="enter"
+        @leave="leave"
+        :css="false"
+      >
+        <div style="height: 25px; width: 75px; background-color: lime; position: relative;" v-if="show" id="anidiv"></div>
+      </transition>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo17',
+        data: {
+          stop: false,
+          show: false,
+          elementPosition: 1,
+          speed: 50,
+          maxSpeed: 10
+        },
+        methods: {
+          start(el) {
+            this.show = true;
+            this.stop = false;
+          },
+          stopIt() {
+            this.stop = true;
+          },
+          beforeEnter(el) {
+            el.style.left = this.elementPosition + 'px';
+          },
+          enter(el, done) {
+            let round = 1;
+            const interval = setInterval(() => {
+              el.style.left = (this.elementPosition + round * 10) + 'px';
+              round++;
+              if (round > 50) {
+                clearInterval(interval);
+                done();
+                this.show = false;
+              }
+            }, this.speed)
+          },
+          leave(el, done) {
+            let round = 1;
+            const interval = setInterval(() => {
+              this.elementPosition = 500;
+              el.style.left = (this.elementPosition - round * 10) + 'px';
+              round++;
+              if (round > 50) {
+                clearInterval(interval);
+                done();
+                vm.elementPosition = 1;
+                if (!this.stop) {
+                  this.show = true
+                }
+              }
+            }, this.speed)
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo17"&gt;<br />
+        &lt;div&gt;<br />
+          Faster<br />
+          &lt;input type="range" v-model="speed" :max="maxSpeed" :min="0" /&gt;<br />
+          Slower<br />
+        &lt;/div&gt;<br />
+        &lt;br /&gt;<br />
+        &lt;button @click="start"&gt;Start!&lt;/button&gt;<br />
+        &lt;button @click="stopIt"&gt;Stop&lt;/button&gt;<br />
+        &lt;br /&gt;&lt;br /&gt;<br />
+        &lt;transition<br />
+          @before-enter="beforeEnter"<br />
+          @enter="enter"<br />
+          @leave="leave"<br />
+          :css="false"<br />
+        &gt;<br />
+          &lt;div style="height: 25px; width: 75px; background-color: lime; position: relative;" v-if="show" id="anidiv"&gt;&lt;/div&gt;<br />
+        &lt;/transition&gt;<br />
+      &lt;/div&gt;
+
+      -------------------------------
+
+      var vm = new Vue({
+        el: '#demo17',
+        data: {
+          stop: false,
+          show: false,
+          elementPosition: 1,
+          speed: 50,
+          maxSpeed: 10
+        },
+        methods: {
+          start(el) {
+            this.show = true;
+            this.stop = false;
+          },
+          stopIt() {
+            this.stop = true;
+          },
+          beforeEnter(el) {
+            el.style.left = this.elementPosition + 'px';
+          },
+          enter(el, done) {
+            let round = 1;
+            const interval = setInterval(() => {
+              el.style.left = (this.elementPosition + round * 10) + 'px';
+              round++;
+              if (round > 50) {
+                clearInterval(interval);
+                done();
+                this.show = false;
+              }
+            }, this.speed)
+          },
+          leave(el, done) {
+            let round = 1;
+            const interval = setInterval(() => {
+              this.elementPosition = 500;
+              el.style.left = (this.elementPosition - round * 10) + 'px';
+              round++;
+              if (round > 50) {
+                clearInterval(interval);
+                done();
+                vm.elementPosition = 1;
+                if (!this.stop) {
+                  this.show = true
+                }
+              }
+            }, this.speed)
+          }
+        }
+      })
+
+    </code></pre>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

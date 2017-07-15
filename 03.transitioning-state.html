@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Transitioning State</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Tween.js -->
+    <script src="scripts/tween.js"></script>
+
+    <!-- Color.js -->
+    <script src="scripts/color.js"></script>
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+    <style>
+      .demo2 {
+        display: inline-block;
+        height: 50px;
+        width: 50px;
+      }
+    </style>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Transitioning State</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Animating State with Watchers</h3>
+
+    <p>Using <b>watchers</b>, we can animate changes of any numerical property into another property. Following is an example using Tween.js:</p>
+
+    <div id="demo1">
+      <input v-model.number="number" type="number" step="20" />
+      <p>{{ animatedNumber }}</p>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: '#demo1',
+        data: {
+          number: 0,
+          animatedNumber: 0
+        },
+        watch: {
+          number(newValue, oldValue) {
+            var vm = this;
+            var animationFrame;
+            function animate(time) {
+              TWEEN.update(time);
+              animationFrame = requestAnimationFrame(animate);
+            }
+            new TWEEN.Tween({ tweeningNumber: oldValue })
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .to({tweeningNumber: newValue}, 500)
+            .onUpdate(function() {
+              vm.animatedNumber = this.tweeningNumber.toFixed(0)
+            })
+            .onComplete(function() {
+              cancelAnimationFrame(animationFrame)
+            })
+            .start()
+            animationFrame = requestAnimationFrame(animate)
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo1"&gt;<br />
+        &lt;input v-model.number="number" type="number" step="20" /&gt;<br />
+        &lt;p&gt;{{ animatedNumber }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------
+
+      var vm = new Vue({
+        el: '#demo1',
+        data: {
+          number: 0,
+          animatedNumber: 0
+        },
+        watch: {
+          number(newValue, oldValue) {
+            var vm = this;
+            var animationFrame;
+            function animate(time) {
+              TWEEN.update(time);
+              animationFrame = requestAnimationFrame(animate);
+            }
+            new TWEEN.Tween({ tweeningNumber: oldValue })
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .to({tweeningNumber: newValue}, 500)
+            .onUpdate(function() {
+              vm.animatedNumber = this.tweeningNumber.toFixed(0)
+            })
+            .onComplete(function() {
+              cancelAnimationFrame(animationFrame)
+            })
+            .start()
+            animationFrame = requestAnimationFrame(animate)
+          }
+        }
+      })
+    </code></pre>
+
+    <hr />
+
+
+
+
+    <h3>Animating Color Property</h3>
+
+    <p>The following example uses tween.js and color.js to animate the color property of an element:</p>
+
+    <div id="demo2">
+      <input
+        v-model="colorQuery"
+        @keyup.enter="updateColor"
+        placeholder="Enter a color!"
+      >
+      <button @click="updateColor">Update</button>
+      <p>Result:</p>
+      <div
+        class="demo2"
+        :style="{ backgroundColor: tweenedCSSColor }"></div>
+      <p>{{ tweenedCSSColor }}</p>
+    </div>
+
+    <script>
+      var Color = net.brehaut.Color;
+      var vm = new Vue({
+        el: '#demo2',
+        data: {
+          colorQuery: '',
+          color: {
+            red: 0,
+            green: 0,
+            blue: 0,
+            alpha: 1
+          },
+          tweenedColor: {}
+        },
+        created() {
+          this.tweenedColor = Object.assign({}, this.color)
+        },
+        watch: {
+          color() {
+            var animationFrame
+            function animate(time) {
+            TWEEN.update(time)
+            animationFrame = requestAnimationFrame(animate)
+          }
+          new TWEEN.Tween(this.tweenedColor)
+          .to(this.color, 750)
+          .onComplete(function() {
+            cancelAnimationFrame(animationFrame)
+          })
+          .start()
+          animationFrame = requestAnimationFrame(animate)
+        }
+      },
+      computed: {
+        tweenedCSSColor() {
+          return new Color({
+            red: this.tweenedColor.red,
+            green: this.tweenedColor.green,
+            blue: this.tweenedColor.blue,
+            alpha: this.tweenedColor.alpha
+          }).toCSS()
+        }
+      },
+      methods: {
+        updateColor() {
+          this.color = new Color(this.colorQuery).toRGB()
+          this.colorQuery = ''
+        }
+      }
+    })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo2"&gt;<br />
+        &lt;input<br />
+          v-model="colorQuery"<br />
+          @keyup.enter="updateColor"<br />
+          placeholder="Enter a color!"<br />
+        &gt;<br />
+        &lt;button @click="updateColor"&gt;Update&lt;/button&gt;<br />
+        &lt;p&gt;Result:&lt;/p&gt;<br />
+        &lt;div<br />
+          class="demo2"<br />
+          :style="{ backgroundColor: tweenedCSSColor }"&gt;&lt;/div&gt;<br />
+        &lt;p&gt;{{ tweenedCSSColor }}&lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------
+
+      var Color = net.brehaut.Color;
+      var vm = new Vue({
+        el: '#demo2',
+        data: {
+          colorQuery: '',
+          color: {
+            red: 0,
+            green: 0,
+            blue: 0,
+            alpha: 1
+          },
+          tweenedColor: {}
+        },
+        created() {
+          this.tweenedColor = Object.assign({}, this.color)
+        },
+        watch: {
+          color() {
+            var animationFrame
+            function animate(time) {
+            TWEEN.update(time)
+            animationFrame = requestAnimationFrame(animate)
+          }
+          new TWEEN.Tween(this.tweenedColor)
+          .to(this.color, 750)
+          .onComplete(function() {
+            cancelAnimationFrame(animationFrame)
+          })
+          .start()
+          animationFrame = requestAnimationFrame(animate)
+        }
+      },
+      computed: {
+        tweenedCSSColor() {
+          return new Color({
+            red: this.tweenedColor.red,
+            green: this.tweenedColor.green,
+            blue: this.tweenedColor.blue,
+            alpha: this.tweenedColor.alpha
+          }).toCSS()
+        }
+      },
+      methods: {
+        updateColor() {
+          this.color = new Color(this.colorQuery).toRGB()
+          this.colorQuery = ''
+        }
+      }
+    })
+    </code></pre>
+
+    <p>The data backing state transitions can be updated in real time, which is especially useful for prototyping. With dynamic state transitions, and variable manipulation, we can achieve effects that would normally be difficult to conceive of. See the following <a href="https://jsfiddle.net/chrisvfritz/65gLu2b6/">JSFiddle</a> for an example using a simple SVG polygon.</p>
+
+    <hr />
+
+
+    <h3>Organizing Transitions into Components</h3>
+
+    <p>Many animations can be extracted out into dedicated child components. The can help to reduce the complexity of our Vue instance:</p>
+
+    <div id="demo4">
+      <input v-model.number="firstNumber" type="number" step="20" />
+      +
+      <input v-model.number="secondNumber" type="number" step="20" />
+      =
+      {{ result }}
+
+      <p>
+        <animated-integer :value="firstNumber"></animated-integer>
+        +
+        <animated-integer :value="secondNumber"></animated-integer>
+        =
+        <animated-integer :value="result"></animated-integer>
+      </p>
+    </div>
+
+    <script>
+      Vue.component('animated-integer', {
+        template: `
+          <span>{{ tweeningValue }}</span>
+        `,
+        props: {
+          value: {
+            type: Number,
+            required: true
+          }
+        },
+        data() {
+          return {
+            tweeningValue: 0
+          }
+        },
+        watch: {
+          value(newValue, oldValue) {
+            this.tween(oldValue, newValue)
+          }
+        },
+        mounted() {
+          this.tween(0, this.value)
+        },
+        methods: {
+          tween(startValue, endValue) {
+            var vm = this
+            var animationFrame
+            function animate(time) {
+              TWEEN.update(time)
+              animationFrame = requestAnimationFrame(animate)
+            }
+            new TWEEN.Tween({ tweeningValue: startValue })
+            .to({ tweeningValue: endValue }, 500)
+            .onUpdate(function() {
+              vm.tweeningValue = this.tweeningValue.toFixed(0)
+            })
+            .onComplete(function() {
+              cancelAnimationFrame(animationFrame)
+            })
+            .start()
+            animationFrame = requestAnimationFrame(animate)
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          firstNumber: 20,
+          secondNumber: 40
+        },
+        computed: {
+          result() {
+            return this.firstNumber + this.secondNumber
+          }
+        }
+      })
+    </script>
+
+    <!-- Add Prismjs -->
+
+    <pre><code class="language-javascript">
+      &lt;div id="demo4"&gt;<br />
+        &lt;input v-model.number="firstNumber" type="number" step="20" /&gt;<br />
+        +<br />
+        &lt;input v-model.number="secondNumber" type="number" step="20" /&gt;<br />
+        =<br />
+        {{ result }}<br />
+  <br />
+        &lt;p&gt;<br />
+          &lt;animated-integer :value="firstNumber"&gt;&lt;/animated-integer&gt;<br />
+          +<br />
+          &lt;animated-integer :value="secondNumber"&gt;&lt;/animated-integer&gt;<br />
+          =<br />
+          &lt;animated-integer :value="result"&gt;&lt;/animated-integer&gt;<br />
+        &lt;/p&gt;<br />
+      &lt;/div&gt;
+
+      ----------------------------
+
+      Vue.component('animated-integer', {
+        template: `
+          &lt;span&gt;{{ tweeningValue }}&lt;/span&gt;
+        `,
+        props: {
+          value: {
+            type: Number,
+            required: true
+          }
+        },
+        data() {
+          return {
+            tweeningValue: 0
+          }
+        },
+        watch: {
+          value(newValue, oldValue) {
+            this.tween(oldValue, newValue)
+          }
+        },
+        mounted() {
+          this.tween(0, this.value)
+        },
+        methods: {
+          tween(startValue, endValue) {
+            var vm = this
+            var animationFrame
+            function animate(time) {
+              TWEEN.update(time)
+              animationFrame = requestAnimationFrame(animate)
+            }
+            new TWEEN.Tween({ tweeningValue: startValue })
+            .to({ tweeningValue: endValue }, 500)
+            .onUpdate(function() {
+              vm.tweeningValue = this.tweeningValue.toFixed(0)
+            })
+            .onComplete(function() {
+              cancelAnimationFrame(animationFrame)
+            })
+            .start()
+            animationFrame = requestAnimationFrame(animate)
+          }
+        }
+      });
+
+      var vm = new Vue({
+        el: '#demo4',
+        data: {
+          firstNumber: 20,
+          secondNumber: 40
+        },
+        computed: {
+          result() {
+            return this.firstNumber + this.secondNumber
+          }
+        }
+      })
+    </code></pre>
+
+    <p>In the example above, all complexity of the transition has been removed from the Vue instance.</p>
+
+    <hr />
+
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Routing</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vuejs -->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- W3.CSS -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- MyStyles -->
+    <link rel="stylesheet" href="styles/styles.css" />
+
+    <!-- Prism.css -->
+    <link rel="stylesheet" href="styles/prism.css" />
+
+    <!-- Prism.js -->
+    <script src="scripts/prism.js"></script>
+
+  </head>
+  <body class="w3-margin">
+
+    <h1>Routing</h1>
+
+
+
+    <!-- Follow this pattern -->
+
+    <h3>Official Router</h3>
+
+    <p>For most single page applications, it is recommended to use the officially-supported <a href="https://github.com/vuejs/vue-router">vue-router-library</a>. For information on how to use vue-router, see the <a href="https://router.vuejs.org/">official documentation</a>.</p>
+
+    <hr />
+
+
+
+
+    <h3>Routing from Scratch</h3>
+
+    <p>If we need just simple routing and don't want to involve a full-featured router library, we can do so by dynamically rendering a page-level component:</p>
+
+    <pre><code class="language-javascript">
+      const NotFound = { template: `&lt;p&gt;Page Not Found&lt;/p&gt;` }
+      const Home = { template: `&lt;p&gt;Home Page&lt;/p&gt;` }
+      const Home = { template: `&lt;p&gt;About Page&lt;/p&gt;` }
+
+      const routes = {
+        '/' : Home,
+        '/about': About
+      }
+
+      new Vue({
+        el: '#app',
+        data: {
+          currentRoute: window.location.pathname
+        },
+        computed: {
+          ViewComponent() {
+            return routes[this.currentRoute] || NotFound
+          }
+        },
+        render(h) {
+          return h(this.ViewComponent)
+        }
+      })
+    </code></pre>
+
+    <p>Combined with the HTML5 History API, we can build a very basic, yet full-functional, client-side router.</p>
+
+    <p>To see this in practice check out <a href="https://github.com/chrisvfritz/vue-2.0-simple-routing-example">this example app</a>.</p>
+
+    <hr />
+
+    <h3>3rd Party Routers</h3>
+
+    <p>We can also use 3rd party routers like <b>Page.js</b>. To see an example of 3rd party router usage, view <a href="https://github.com/chrisvfritz/vue-2.0-simple-routing-example/tree/pagejs">this project</a>.</p>
+
+    <hr />
+
+    <!-- For Back Navigation -->
+    <script>
+    function goBack() {
+      window.history.back();
+    }
+    </script>
+
+    <button class="w3-btn w3-block w3-teal" onclick="goBack()">Back</button>
+
+    <nav>
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../resume/resume.html">Resume</a></li>
+        <li><a href="../../portfolio/portfolio.html">Portfolio</a></li>
+        <li><a href="../projects.html">Projects</a></li>
+        <li><a href="../../about/about.html">About</a></li>
+      </ul>
+    </nav>
+
+  </body>
+</html>
